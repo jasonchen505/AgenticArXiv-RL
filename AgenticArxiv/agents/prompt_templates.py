@@ -37,12 +37,31 @@ Action: {{"name":"download_arxiv_pdf","args":{{"ref":null,"session_id":"demo1","
 {history}
 """
 
-def get_react_prompt(task: str, tools_description: str, history: str = "") -> str:
+
+PROMPT_POLICIES = ("baseline", "contract_v1")
+
+# Generic request contract: no task IDs, oracle steps, expected arguments, or
+# hard-coded benchmark answers. This opt-in policy changes inference prompts.
+REQUEST_CONTRACT_V1 = """[执行前核对当前用户请求]
+- 只选择工具清单实际支持的能力；缺少必要上下文或能力时，明确指出当前阻碍，再 FINISH，不声称完成。
+- 将用户明确指定的每个参数、开关、数量、时间范围、章节、格式和预算逐项放入 Action.args；明确的开关值不可因工具默认值而省略。
+- 只传递工具支持且请求要求的选项，不擅自增加处理方式；关键词按用户原文传递，不自行增加引号或改写。
+- 论文引用依据当前请求和已存在的会话状态，保持引用含义与顺序；不编造 ID，也不把明确 ID 当作序号。
+- FINISH 前对照当前请求与真实工具历史：必要动作已经执行、关键参数符合要求、返回未表明失败，才能说已完成；否则说明尚未完成的原因。
+"""
+
+def get_react_prompt(task: str, tools_description: str, history: str = "", prompt_policy: str = "baseline") -> str:
     """生成ReAct提示词"""
+    if prompt_policy not in PROMPT_POLICIES:
+        raise ValueError(f"Unknown prompt policy: {prompt_policy}")
+    # Use the template field directly: a user request or tool description may
+    # contain the same marker text and must remain byte-for-byte intact.
+    visible_history = (REQUEST_CONTRACT_V1 + "\n" + history
+                       if prompt_policy == "contract_v1" else history)
     return REACT_PROMPT_TEMPLATE.format(
         task=task,
         tools_description=tools_description,
-        history=history
+        history=visible_history
     )
 
 

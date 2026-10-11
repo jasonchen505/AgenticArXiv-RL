@@ -386,6 +386,12 @@ class BenchmarkReport:
             "error_count": len(self.errors),
             "summary_by_agent": self.summary_by_agent(),
             "summary_by_task": self.summary_by_task(),
+            "reliability_by_agent": self.reliability_by_agent(),
+            "metric_definitions": {
+                "strict_success_rate": "Successful runs / all runs (pass^1 for balanced repeats)",
+                "pass^k": "Mean over tasks of C(successful trials, k) / C(all trials, k)",
+                "insufficient_trials": "null score; task excluded and counted in pass^k_skipped",
+            },
             "details": self.detail_table(),
             "errors": list(self.errors),
         }

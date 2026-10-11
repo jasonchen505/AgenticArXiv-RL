@@ -333,7 +333,7 @@ class BooleanFlagContractTest(unittest.TestCase):
 
 class RewardVarianceGuardTest(unittest.TestCase):
     def _fire(self, guard, n, step=1, **logs):
-        """step 现在会影响行为：开局零方差是故障，练久了是收敛。"""
+        """奖励证据决定零方差分类；step 用于记录停止位置。"""
         control = SimpleNamespace(should_training_stop=False)
         for _ in range(n):
             guard.on_log(Mock(), SimpleNamespace(global_step=step), control,

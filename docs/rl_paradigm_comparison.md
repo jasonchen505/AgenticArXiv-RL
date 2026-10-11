@@ -25,7 +25,7 @@
 
 ## 结果
 
-### 严格成功率 pass³（离线，seed 45 / repeat 3）
+### 严格成功率 pass¹（离线，seed 45 / repeat 3）
 
 | 模型 | rl_train（99） | dev（24） | iid_test（54） | ood_test（12） |
 |---|---|---|---|---|
@@ -34,6 +34,26 @@
 | GSPO | 0.636 | 0.375 | 0.444 | 0.500 |
 | Dr.GRPO | 0.657 | 0.375 | 0.444 | 0.500 |
 | DAPO（无动态采样） | **0.667** | **0.500** | **0.481** | 0.500 |
+
+### pass³ 归档重算（2026-10-02，复现审计）
+
+上表的历史数值实际对应单次严格成功率 pass¹，不能统一标成 pass³。
+本次从 summary.json 的逐 trial 严格指标重算 C(c,3)/C(n,3)，每个任务均为 3 次试验。
+这只是历史指标复算，尚未重新训练或重新生成历史模型响应。
+
+| 模型 | rl_train（33 任务） | dev（8 任务） | iid_test（18 任务） | ood_test（4 任务） |
+|---|---|---|---|---|
+| SFT | 0.061 | 0.000 | 0.056 | 0.000 |
+| GRPO | 0.636 | 0.375 | 0.444 | 0.500 |
+| GSPO | 0.636 | 0.375 | 0.444 | 0.500 |
+| Dr.GRPO | 0.636 | 0.375 | 0.444 | 0.500 |
+| DAPO（无动态采样） | 0.667 | 0.500 | 0.444 | 0.500 |
+
+Dr.GRPO 的训练集 0.657、DAPO 的 IID 0.481 是 pass¹，不是 pass³。
+dev 的 DAPO 优势只对应多 1 个全成功任务（4/8 对 3/8），OOD 仅 4 个任务；
+不能由此宣称算法显著优于 GRPO。缺少原始快照时无法恢复语义论文 ID 标准答案，
+直接对裸任务重打分的差异不应视为已确认回归。
+复算脚本：scripts/audit_archived_evaluations.py；本轮记录见 reproduction_round_001.md。
 
 ### 辅助指标（tool_accuracy / false_finish / 平均总 token）
 
@@ -46,15 +66,15 @@
 
 ## 训练动态观察
 
-- **GSPO 与基线权重不同但评测逐位同分**：final 权重哈希互异、训练 reward 轨迹后段分化（GSPO 第 58 步 0.452 vs Dr.GRPO 0.765），但四个切分的 pass³ 与辅助指标几乎完全一致。同种子 + 确定性回放下，两种 IS 粒度收敛到了相同的行为模式——在本任务分布与 60 步预算内，序列级 IS 未带来可测差异。
-- **Dr.GRPO 全面持平或略优**：rl_train pass³ +0.021（样本量下属弱信号），ood 的工具准确率与虚假完成率占优（0.67/0.33）；去 std 缩放后有效更新更大，但 60 步内无失稳（阶段验证 mean_reward 0.295，阈值 −0.2）。
-- **DAPO（无动态采样）是三变体中最强**：pass³ 在 rl_train / dev / iid 三个切分领先（0.667 / 0.500 / 0.481，基线 0.636 / 0.375 / 0.444），iid 的工具准确率/虚假完成率优势最大（0.65/0.35 vs 0.50/0.50）。clip-higher + 无 KL 让策略在去 std 归一化方向上更进一步；训练全程无失稳，token 用量与基线相当。注意 dev +0.125 在 24 样本下置信区间宽。
+- **GSPO 与基线权重不同但评测逐位同分**：final 权重哈希互异、训练 reward 轨迹后段分化（GSPO 第 58 步 0.452 vs Dr.GRPO 0.765），但四个切分的 pass¹ 与辅助指标几乎完全一致。同种子 + 确定性回放下，两种 IS 粒度收敛到了相同的行为模式——在本任务分布与 60 步预算内，序列级 IS 未带来可测差异。
+- **Dr.GRPO 全面持平或略优**：rl_train pass¹ +0.021（样本量下属弱信号），ood 的工具准确率与虚假完成率占优（0.67/0.33）；去 std 缩放后有效更新更大，但 60 步内无失稳（阶段验证 mean_reward 0.295，阈值 −0.2）。
+- **DAPO（无动态采样）是三变体中最强**：pass¹ 在 rl_train / dev / iid 三个切分领先（0.667 / 0.500 / 0.481，基线 0.636 / 0.375 / 0.444），iid 的工具准确率/虚假完成率优势最大（0.65/0.35 vs 0.50/0.50）。clip-higher + 无 KL 让策略在去 std 归一化方向上更进一步；训练全程无失稳，token 用量与基线相当。注意 dev +0.125 在 24 样本下置信区间宽。
 - **loss 跨 loss_type 不可比**：不同范式的 loss 尺度定义不同（IS 粒度、归一化方式），只比 reward 曲线与评测，勿比 loss 绝对值（GSPO 0.0178 / Dr.GRPO 0.0012 仅为各自口径）。
 
 ## 产物
 
 - 权重：ModelScope `Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-GRPO-{GSPO,DrGRPO,DAPO}`
-- 训练 manifest：`outputs/grpo_{gspo,drgrpo,dapo}_release/final/training_manifest.json`（注意 manifest 未记录 `importance_sampling_level` / `scale_rewards`，以 run_name 与本文档为准）
+- 训练 manifest：`outputs/grpo_{gspo,drgrpo,dapo}_release/final/training_manifest.json`（历史 manifest 未记录 `importance_sampling_level` / `scale_rewards`，以 run_name 与本文档为准）
 - 评测产物：`artifacts/eval_grpo_{gspo,drgrpo,dapo}_{v6_rl_train,v381_dev,v381_iid,v381_ood}_r3_s45/`
 
 ## 局限

@@ -142,7 +142,7 @@ python -m AgenticArxiv.rl.train_grpo --report_to tensorboard
 tensorboard --logdir outputs/grpo/logs
 ```
 
-> Released: [AgenticArXiv-RL-Qwen2.5-1.5B-GRPO](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-GRPO) (33 signal tasks, fully offline snapshot replay). Offline evaluation (seed 45 / 3 repeats, strict success rate pass³), SFT → GRPO: **rl_train 0.081→0.636, dev 0.000→0.375, iid_test 0.056→0.444, ood_test 0.000→0.500**.
+> Released: [AgenticArXiv-RL-Qwen2.5-1.5B-GRPO](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-GRPO) (33 signal tasks, fully offline snapshot replay). Offline evaluation (seed 45 / 3 repeats, strict success rate pass¹), SFT → GRPO: **rl_train 0.081→0.636, dev 0.000→0.375, iid_test 0.056→0.444, ood_test 0.000→0.500**.
 
 **Multi-turn rollout and scoring** (`rl/grpo_reward.py`): each turn, the current policy generates a ReAct action, an independent `MockArxivEnv` executes it and the observation is spliced back into the context; assistant tokens enter the loss while environment tokens only provide context via `env_mask=0`; the finished trajectory is scored by the five-component `RewardCalculator`, under the same standard as rollout / benchmark.
 
@@ -188,9 +188,9 @@ FIGURE_ANALYSIS_BACKEND=vlm VLM_MODEL_PATH=<FigureQA 目录> \
 | [AgenticArXiv-RL-Qwen2.5-1.5B-SFT](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-SFT) | Qwen2.5-1.5B | Stage 1 full-parameter SFT (first 8 tools) |
 | [AgenticArXiv-RL-Qwen2.5-1.5B-GRPO](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-GRPO) | Qwen2.5-1.5B | Stage 3 GRPO (four-split evaluation above) |
 | [AgenticArXiv-RL-Qwen2.5-1.5B-GRPO-GSPO](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-GRPO-GSPO) | Qwen2.5-1.5B | GRPO + sequence-level importance sampling (tied with the baseline on all four splits, see the paradigm comparison doc) |
-| [AgenticArXiv-RL-Qwen2.5-1.5B-GRPO-DrGRPO](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-GRPO-DrGRPO) | Qwen2.5-1.5B | Unbiased GRPO variant (rl_train 0.657 / dev 0.375 / iid 0.444 / ood 0.500, pass³) |
-| [AgenticArXiv-RL-Qwen2.5-1.5B-GRPO-DAPO](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-GRPO-DAPO) | Qwen2.5-1.5B | DAPO objective without dynamic sampling (rl_train 0.667 / dev 0.500 / iid 0.481 / ood 0.500, pass³; best of the three variants) |
-| [AgenticArXiv-RL-Qwen2.5-1.5B-SFT-T5](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-SFT-T5) | Qwen2.5-1.5B | SFT + the `analyze_figure` four-step chain (rl_train 0.485 / dev 0.250 / iid 0.278 / ood 0.250, pass³) |
+| [AgenticArXiv-RL-Qwen2.5-1.5B-GRPO-DrGRPO](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-GRPO-DrGRPO) | Qwen2.5-1.5B | Unbiased GRPO variant (rl_train 0.657 / dev 0.375 / iid 0.444 / ood 0.500, pass¹) |
+| [AgenticArXiv-RL-Qwen2.5-1.5B-GRPO-DAPO](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-GRPO-DAPO) | Qwen2.5-1.5B | DAPO objective without dynamic sampling (rl_train 0.667 / dev 0.500 / iid 0.481 / ood 0.500, pass¹; best of the three variants) |
+| [AgenticArXiv-RL-Qwen2.5-1.5B-SFT-T5](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-SFT-T5) | Qwen2.5-1.5B | SFT + the `analyze_figure` four-step chain (rl_train 0.485 / dev 0.250 / iid 0.278 / ood 0.250, pass¹) |
 | [AgenticArXiv-RL-Qwen3-VL-4B-FigureQA](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen3-VL-4B-FigureQA) | Qwen3-VL-4B | env-side figure-analysis VLM |
 
 All models are hosted on ModelScope (`Algorineko/AgenticArXiv-RL-*`); each model card includes the offline evaluation table and an honest statement of limitations.
@@ -261,7 +261,7 @@ MIT License
 ### P1 — Next-Generation Agentic RL Algorithms
 
 - [x] **GSPO / Dr.GRPO wiring**: `--importance_sampling_level sequence` (sequence-level importance sampling, GSPO) and `--loss_type dr_grpo` (unbiased length normalization) are wired into `train_grpo.py`, orthogonal to and composable with the `--dapo` preset
-- [x] **Train and compare the new methods**: GSPO / Dr.GRPO / DAPO variants trained on the frozen splits and released (shared recipe aligned with the baseline, seed 42 / 60 steps; offline pass³, GRPO baseline: rl_train 0.636 / dev 0.375 / iid 0.444 / ood 0.500):
+- [x] **Train and compare the new methods**: GSPO / Dr.GRPO / DAPO variants trained on the frozen splits and released (shared recipe aligned with the baseline, seed 42 / 60 steps; offline pass¹, GRPO baseline: rl_train 0.636 / dev 0.375 / iid 0.444 / ood 0.500):
   - **GSPO** (sequence-level IS): 0.636 / 0.375 / 0.444 / 0.500 — identical to the baseline on every split (different weights, diverging reward curves, same converged behavior)
   - **Dr.GRPO** (unbiased objective): 0.657 / 0.375 / 0.444 / 0.500 — slightly ahead on rl_train; best ood tool accuracy 0.67 / false-finish 0.33
   - **DAPO** (clip-higher 0.28 + truncation masking + β=0; dynamic sampling infeasible on the 33-task pool, therefore off): **0.667 / 0.500 / 0.481 / 0.500** — best on rl_train / dev / iid
@@ -275,7 +275,7 @@ MIT License
 
 ### P3 — Bounded RSI (restricted self-evolution)
 
-- [ ] **Self-evolving data loop**: held-out evaluation exposes weaknesses → the bad-case library grows automatically → parametric derivation of targeted data → retrain → freeze a new held-out set (reuses the existing evaluation/data/training pipelines; all prerequisites are in place). Acceptance: the four-split pass³ must not regress across rounds, and the bad-case library only grows (the four-step loop of [arXiv:2609.11873](https://arxiv.org/abs/2609.11873))
+- [ ] **Self-evolving data loop**: held-out evaluation exposes weaknesses → the bad-case library grows automatically → parametric derivation of targeted data → retrain → freeze a new held-out set (reuses the existing evaluation/data/training pipelines; all prerequisites are in place). Acceptance: the four-split pass¹ must not regress across rounds, and the bad-case library only grows (the four-step loop of [arXiv:2609.11873](https://arxiv.org/abs/2609.11873))
 
 ### ⛔ Environment Blockers
 

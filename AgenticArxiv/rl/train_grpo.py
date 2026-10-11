@@ -252,12 +252,12 @@ class RewardVarianceGuard(TrainerCallback):
 
     def __init__(self, patience: int = 5, grace_steps: int = 20):
         self.patience = patience
-        # 只有开局 grace_steps 步内的零方差才算故障。此后再出现，通常是策略
-        # 已经在当前任务集上做满了 —— 尤其 --split rl_train 只有十来条中间带
-        # 任务，模型学会之后每组都是满分，方差自然归零。那是「该换任务了」，
-        # 不是「训练坏了」，把它当故障会白扔一个已经练好的 checkpoint。
+        # Keep the constructor argument for caller/manifest compatibility.
+        # Quality, rather than elapsed steps, distinguishes a full-score window
+        # from uniform failure. Early saturation is possible after good SFT.
         self.grace_steps = grace_steps
         self.streak = 0
+        self.ceiling_streak = 0
         self.tripped = False
         self.converged = False
         self.stop_step = None
@@ -274,8 +274,21 @@ class RewardVarianceGuard(TrainerCallback):
         )
         if not dead:
             self.streak = 0
+            self.ceiling_streak = 0
             return
 
+        mean = logs.get("reward")
+        try:
+            value = float(mean)
+            clean = (
+                float(logs.get("rollout/finished", 1.0)) >= 1.0
+                and float(logs.get("rollout/parse_error_rate", 0.0)) == 0.0
+                and float(logs.get("rollout/tool_error_rate", 0.0)) == 0.0
+            )
+            full_score = math.isfinite(value) and value >= 1.0 - 1e-6 and clean
+        except (TypeError, ValueError):
+            full_score = False
+        self.ceiling_streak = self.ceiling_streak + 1 if full_score else 0
         self.streak += 1
         if self.streak < self.patience:
             return
@@ -284,10 +297,10 @@ class RewardVarianceGuard(TrainerCallback):
         mean = logs.get("reward")
         step = _global_step(state)
         self.stop_step = step
-        if step > self.grace_steps:
-            # 训练后段的连续零方差更像局部采样窗口已饱和，而非开局就没有
-            # 可学习信号。正常停止并保留 checkpoint，但不要据此宣称整个任务集
-            # 都已收敛：随机采样可能连续命中已经学会的容易任务。
+        if self.ceiling_streak >= self.patience:
+            # Every group in this zero-variance window has full reward and no
+            # execution failure. Preserve the policy even during early steps;
+            # this describes the sampled window, not global convergence.
             self.converged = True
             print(
                 f"\n⏹  截至第 {step} 步已连续 {self.streak} 次记录到组内奖励方差为 0"
@@ -369,6 +382,7 @@ def main(
     lr: float = 1e-5,
     beta: float = DEFAULT_BETA,
     reward_curriculum_steps: int = 30,
+    reward_objective: str = "legacy",
     num_generations: int = 4,
     max_completion_length: int = 256,
     max_turns: int = 4,
@@ -596,6 +610,7 @@ def main(
         reward_calc=reward_calc,
         tracker=tracker,
         auditor=auditor,
+        reward_objective=reward_objective,
     )
     rollout_func = make_multiturn_rollout_func(
         environment_factory,
@@ -611,6 +626,7 @@ def main(
             tasks_by_id,
             env=None,
             reward_calc=reward_calc,
+            reward_objective=reward_objective,
             tracker=None,
             auditor=None,
         )
@@ -838,12 +854,15 @@ def main(
                 "tripped": guard.tripped,
                 "patience": guard.patience,
                 "grace_steps": guard.grace_steps,
+                "quality_aware": True,
+                "full_score_streak": guard.ceiling_streak,
                 "stop_step": guard.stop_step,
             }
             if guard is not None
             else {"enabled": False}
         ),
         "reward_curriculum_steps": reward_curriculum_steps,
+        "reward_objective": reward_objective,
         "initial_reward_weights": dataclasses.asdict(initial_weights),
         "rollout_audit": (
             {
@@ -909,6 +928,10 @@ if __name__ == "__main__":
     p.add_argument("--grad_accum", type=int, default=1)
     p.add_argument("--lr", type=float, default=1e-5)
     p.add_argument("--beta", type=float, default=0.04)
+    p.add_argument(
+        "--reward_objective", choices=["legacy", "blocked_reason_v1"], default="legacy",
+        help="Opt-in training-only cap for incorrect blocked FINISH reasons; benchmark scoring unchanged",
+    )
     p.add_argument(
         "--reward_curriculum_steps", type=int, default=30,
         help="奖励课程持续步数。默认30保持历史实验兼容；SFT后直接优化工具、参数和结果时"

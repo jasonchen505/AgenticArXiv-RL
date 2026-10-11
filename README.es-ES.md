@@ -142,7 +142,7 @@ python -m AgenticArxiv.rl.train_grpo --report_to tensorboard
 tensorboard --logdir outputs/grpo/logs
 ```
 
-> Publicado: [AgenticArXiv-RL-Qwen2.5-1.5B-GRPO](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-GRPO) (33 tareas con señal, replay offline de snapshots de principio a fin). Evaluación offline (seed 45 / repeat 3, tasa de éxito estricta pass³) SFT → GRPO: **rl_train 0.081→0.636, dev 0.000→0.375, iid_test 0.056→0.444, ood_test 0.000→0.500**.
+> Publicado: [AgenticArXiv-RL-Qwen2.5-1.5B-GRPO](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-GRPO) (33 tareas con señal, replay offline de snapshots de principio a fin). Evaluación offline (seed 45 / repeat 3, tasa de éxito estricta pass¹) SFT → GRPO: **rl_train 0.081→0.636, dev 0.000→0.375, iid_test 0.056→0.444, ood_test 0.000→0.500**.
 
 **Rollout y puntuación multiturno** (`rl/grpo_reward.py`): en cada turno la política actual genera una acción ReAct y un `MockArxivEnv` independiente la ejecuta, reinsertando la observation en el contexto; los tokens del assistant entran en la loss y los del entorno actúan solo como contexto vía `env_mask=0`; la trayectoria completa la puntúa el `RewardCalculator` de cinco componentes, con el mismo estándar que usan el rollout y el benchmark.
 
@@ -188,9 +188,9 @@ FIGURE_ANALYSIS_BACKEND=vlm VLM_MODEL_PATH=<directorio de FigureQA> \
 | [AgenticArXiv-RL-Qwen2.5-1.5B-SFT](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-SFT) | Qwen2.5-1.5B | Fase 1: SFT a parámetros completos (primeras 8 herramientas) |
 | [AgenticArXiv-RL-Qwen2.5-1.5B-GRPO](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-GRPO) | Qwen2.5-1.5B | Fase 3: GRPO (evaluación en las cuatro particiones, más arriba) |
 | [AgenticArXiv-RL-Qwen2.5-1.5B-GRPO-GSPO](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-GRPO-GSPO) | Qwen2.5-1.5B | GRPO + muestreo de importancia a nivel de secuencia (empatado con la referencia en las cuatro particiones; ver el doc de comparación) |
-| [AgenticArXiv-RL-Qwen2.5-1.5B-GRPO-DrGRPO](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-GRPO-DrGRPO) | Qwen2.5-1.5B | Variante sin sesgo de GRPO (rl_train 0.657 / dev 0.375 / iid 0.444 / ood 0.500, pass³) |
-| [AgenticArXiv-RL-Qwen2.5-1.5B-GRPO-DAPO](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-GRPO-DAPO) | Qwen2.5-1.5B | Objetivo DAPO sin muestreo dinámico (rl_train 0.667 / dev 0.500 / iid 0.481 / ood 0.500, pass³; la mejor de las tres variantes) |
-| [AgenticArXiv-RL-Qwen2.5-1.5B-SFT-T5](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-SFT-T5) | Qwen2.5-1.5B | SFT + cadena de cuatro pasos con `analyze_figure` (rl_train 0.485 / dev 0.250 / iid 0.278 / ood 0.250, pass³) |
+| [AgenticArXiv-RL-Qwen2.5-1.5B-GRPO-DrGRPO](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-GRPO-DrGRPO) | Qwen2.5-1.5B | Variante sin sesgo de GRPO (rl_train 0.657 / dev 0.375 / iid 0.444 / ood 0.500, pass¹) |
+| [AgenticArXiv-RL-Qwen2.5-1.5B-GRPO-DAPO](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-GRPO-DAPO) | Qwen2.5-1.5B | Objetivo DAPO sin muestreo dinámico (rl_train 0.667 / dev 0.500 / iid 0.481 / ood 0.500, pass¹; la mejor de las tres variantes) |
+| [AgenticArXiv-RL-Qwen2.5-1.5B-SFT-T5](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-SFT-T5) | Qwen2.5-1.5B | SFT + cadena de cuatro pasos con `analyze_figure` (rl_train 0.485 / dev 0.250 / iid 0.278 / ood 0.250, pass¹) |
 | [AgenticArXiv-RL-Qwen3-VL-4B-FigureQA](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen3-VL-4B-FigureQA) | Qwen3-VL-4B | VLM de análisis de figuras del lado del entorno |
 
 Todos se alojan en ModelScope (`Algorineko/AgenticArXiv-RL-*`); las model cards incluyen la tabla de evaluación offline y una descripción honesta de sus limitaciones.
@@ -261,7 +261,7 @@ Licencia MIT
 ### P1 — Algoritmos de RL Agentic de Nueva Generación
 
 - [x] **Integración de GSPO / Dr.GRPO**: `--importance_sampling_level sequence` (muestreo de importancia a nivel de secuencia, GSPO) y `--loss_type dr_grpo` (normalización por longitud sin sesgo) ya están conectados en `train_grpo.py`, y son ortogonales y combinables con el preset `--dapo`
-- [x] **Entrenamiento y comparación con métodos nuevos**: las variantes GSPO / Dr.GRPO / DAPO fueron entrenadas sobre las particiones congeladas y publicadas (receta común alineada con la referencia, seed 42 / 60 pasos; pass³ fuera de línea, GRPO de referencia: rl_train 0.636 / dev 0.375 / iid 0.444 / ood 0.500):
+- [x] **Entrenamiento y comparación con métodos nuevos**: las variantes GSPO / Dr.GRPO / DAPO fueron entrenadas sobre las particiones congeladas y publicadas (receta común alineada con la referencia, seed 42 / 60 pasos; pass¹ fuera de línea, GRPO de referencia: rl_train 0.636 / dev 0.375 / iid 0.444 / ood 0.500):
   - **GSPO** (IS a nivel de secuencia): 0.636 / 0.375 / 0.444 / 0.500 — idéntico a la referencia en todas las particiones (pesos distintos, curvas de recompensa divergentes, mismo comportamiento convergido)
   - **Dr.GRPO** (objetivo sin sesgo): 0.657 / 0.375 / 0.444 / 0.500 — ligeramente superior en rl_train; mejor precisión de herramientas en ood (0.67) y menor tasa de finalización falsa (0.33)
   - **DAPO** (clip-higher 0.28 + máscara de truncamiento + β=0; el muestreo dinámico no es viable en el grupo de 33 tareas, por lo que se desactiva): **0.667 / 0.500 / 0.481 / 0.500** — el mejor en rl_train / dev / iid
@@ -275,7 +275,7 @@ Licencia MIT
 
 ### P3 — Autoevolución RSI Acotada (bounded RSI)
 
-- [ ] **Bucle de datos autoevolutivo**: la evaluación holdout expone debilidades → la biblioteca de casos malos se amplía automáticamente → derivación paramétrica de datos dirigidos → reentrenamiento → congelación de un nuevo holdout (reutiliza las líneas existentes de evaluación/datos/entrenamiento; los prerrequisitos ya están listos). Criterio de aceptación: el pass³ en las cuatro particiones no retrocede en ninguna ronda y la biblioteca de casos malos solo crece (ciclo de cuatro pasos de [arXiv:2609.11873](https://arxiv.org/abs/2609.11873))
+- [ ] **Bucle de datos autoevolutivo**: la evaluación holdout expone debilidades → la biblioteca de casos malos se amplía automáticamente → derivación paramétrica de datos dirigidos → reentrenamiento → congelación de un nuevo holdout (reutiliza las líneas existentes de evaluación/datos/entrenamiento; los prerrequisitos ya están listos). Criterio de aceptación: el pass¹ en las cuatro particiones no retrocede en ninguna ronda y la biblioteca de casos malos solo crece (ciclo de cuatro pasos de [arXiv:2609.11873](https://arxiv.org/abs/2609.11873))
 
 ### ⛔ Bloqueos del Entorno
 

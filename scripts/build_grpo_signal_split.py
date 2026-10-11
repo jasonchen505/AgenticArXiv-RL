@@ -20,6 +20,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 from collections import Counter
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Sequence, Tuple
@@ -59,11 +60,13 @@ def select_tasks(
     probe_tasks: Mapping[str, Mapping[str, Any]],
     eligible: Sequence[str],
     min_informative_groups: int,
+    quality_tasks: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> Dict[str, List[str]]:
     buckets: Dict[str, List[str]] = {
         "rl_train": [],
         "dropped_low_signal": [],
         "ceiling_control": [],
+        "zero_variance_low_quality": [],
         "missing": [],
     }
     for task_id in eligible:
@@ -75,7 +78,19 @@ def select_tasks(
         if informative >= min_informative_groups:
             buckets["rl_train"].append(task_id)
         elif informative == 0:
-            buckets["ceiling_control"].append(task_id)
+            # A constant negative/partial reward gives no relative advantage,
+            # but is not a mastered task. Require full-score extrema, and when
+            # supplied, independently recomputed strict success on every sample.
+            extrema = [entry.get("min_reward"), entry.get("max_reward")]
+            full_score = all(isinstance(v, (int, float)) and math.isfinite(v)
+                             and v >= 1.0 - 1e-6 for v in extrema)
+            if quality_tasks is not None:
+                quality = quality_tasks.get(task_id, {})
+                full_score = (full_score and quality.get("samples", 0) > 0
+                              and quality.get("samples") == entry.get("sample_count")
+                              and quality.get("strict_success_count") == quality.get("samples"))
+            bucket = "ceiling_control" if full_score else "zero_variance_low_quality"
+            buckets[bucket].append(task_id)
         else:
             buckets["dropped_low_signal"].append(task_id)
     return buckets
@@ -102,7 +117,8 @@ def build_document(
     selected = buckets["rl_train"]
     controls = buckets["ceiling_control"]
     dropped = buckets["dropped_low_signal"]
-    audited = selected + controls + dropped
+    low_quality = buckets.get("zero_variance_low_quality", [])
+    audited = selected + controls + dropped + low_quality
     audit = {task_id: audit_entry(probe_tasks[task_id]) for task_id in audited}
     groups = sum(audit[task_id]["group_count"] for task_id in selected)
     informative = sum(
@@ -112,7 +128,7 @@ def build_document(
         probe_tasks[task_id]["group_count"] for task_id in selected
     ).most_common(1)[0][0]
     return {
-        "version": 6,
+        "version": 7,
         "status": "probe_selected_pending_train",
         "task_set": "expanded",
         "purpose": (
@@ -142,9 +158,11 @@ def build_document(
                 f"prompt groups out of {groups_per_task} in the frozen-policy probe."
             ),
             "exclude": (
-                "Move tasks with zero informative prompt groups to "
-                "ceiling_control; drop tasks with exactly one informative group "
-                "as inconclusive."
+                "Zero-variance full-score tasks form ceiling_control; constant "
+                "failure/partial-credit or uncertified tasks form "
+                "zero_variance_low_quality. Drop fewer-than-threshold "
+                "informative groups as inconclusive. If strict quality is "
+                "provided, all samples must pass to certify ceiling."
             ),
             "rationale": (
                 "GRPO needs within-prompt reward variance. A task whose "
@@ -155,14 +173,16 @@ def build_document(
         "split": {
             "rl_train": selected,
             "ceiling_control": controls,
+            "zero_variance_low_quality": low_quality,
             "dropped_low_signal": dropped,
         },
         "audit": audit,
         "summary": {
             "probe_task_count": len(probe_tasks),
-            "eligible_task_count": len(selected) + len(controls) + len(dropped),
+            "eligible_task_count": len(audited),
             "selected_task_count": len(selected),
             "ceiling_control_task_count": len(controls),
+            "zero_variance_low_quality_task_count": len(low_quality),
             "dropped_task_count": len(dropped),
             "selected_prompt_group_count": groups,
             "selected_rollout_count": groups * num_generations,
@@ -183,7 +203,10 @@ def main() -> None:
     parser.add_argument("--num-generations", type=int, default=4)
     parser.add_argument("--seed", type=int, default=43)
     parser.add_argument("--min-informative-groups", type=int, default=2)
+    parser.add_argument("--quality-summary", help="Independent strict probe summary from summarize_repro_probe.py")
     args = parser.parse_args()
+    if args.min_informative_groups < 1 or args.num_generations < 2:
+        raise SystemExit("Require positive informative-group threshold and at least two generations")
 
     probe_path = Path(args.probe)
     probe = json.loads(probe_path.read_text(encoding="utf-8"))
@@ -191,7 +214,18 @@ def main() -> None:
         raise SystemExit(f"{probe_path} 里没有 tasks 字段，不是探测汇总文件")
 
     eligible = load_eligible_tasks(args.source_split)
-    buckets = select_tasks(probe["tasks"], eligible, args.min_informative_groups)
+    quality = None
+    if args.quality_summary:
+        quality_doc = json.loads(Path(args.quality_summary).read_text())
+        if not quality_doc.get("adapter_tensors_unchanged"):
+            raise SystemExit("Quality summary does not certify a frozen adapter")
+        if quality_doc.get("reward_summary_sha256") != sha256_file(probe_path):
+            raise SystemExit("Strict quality summary belongs to a different reward probe")
+        adapter_path = Path(args.model) / "adapter_model.safetensors"
+        if not adapter_path.exists() or quality_doc.get("source_adapter_sha256") != sha256_file(adapter_path):
+            raise SystemExit("Strict quality summary belongs to a different policy adapter")
+        quality = quality_doc["per_task"]
+    buckets = select_tasks(probe["tasks"], eligible, args.min_informative_groups, quality)
     if buckets["missing"]:
         raise SystemExit(
             f"探测结果缺少 {len(buckets['missing'])} 个任务的统计："
@@ -213,6 +247,9 @@ def main() -> None:
         min_informative_groups=args.min_informative_groups,
         buckets=buckets,
     )
+    document["source"]["strict_quality_summary"] = args.quality_summary
+    document["source"]["strict_quality_summary_sha256"] = (sha256_file(Path(args.quality_summary)) if args.quality_summary else None)
+    document["source"]["ceiling_certified_by"] = "reward_and_strict_oracle" if quality is not None else "reward_extrema_only"
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(
@@ -228,6 +265,7 @@ def main() -> None:
     )
     print(
         "  ceiling_control={ceiling_control_task_count} 条，"
+        "零方差低质量={zero_variance_low_quality_task_count} 条，"
         "低信号丢弃={dropped_task_count} 条".format(**summary)
     )
 

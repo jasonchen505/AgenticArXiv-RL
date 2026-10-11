@@ -120,7 +120,11 @@ def main():
             "（指代形态、可选参数、跨步状态、多跳链路、负向约束、不可行请求）"
         ),
     )
+    parser.add_argument("--prompt-policy", choices=["baseline", "contract_v1"],
+                        default="baseline", help="Opt-in regex request-contract prompt ablation")
     args = parser.parse_args()
+    if args.prompt_policy != "baseline" and args.agents != ["regex"]:
+        parser.error("--prompt-policy contract_v1 requires --agents regex")
     if args.backend == "transformers" and not args.model:
         parser.error("--backend transformers 必须同时提供 --model 本地模型目录")
 
@@ -196,6 +200,7 @@ def main():
         local_device=args.local_device,
         local_dtype=args.local_dtype,
         generation_seed=args.seed,
+        prompt_policy=args.prompt_policy,
     )
 
     print("=" * 60)
@@ -205,6 +210,7 @@ def main():
     if args.backend == "transformers":
         print(f"  设备/精度: {args.local_device} / {args.local_dtype}")
     print(f"  前缀:     {runner.session_prefix}")
+    print(f"  Prompt:   {args.prompt_policy}")
     print(f"  Agent:    {', '.join(args.agents)}")
     print(f"  任务数:   {len(task_list)}")
     print(f"  重复次数: {args.repeat}")
@@ -259,6 +265,17 @@ def main():
     report = BenchmarkReport(all_metrics, model=model, errors=error_dicts)
     report.print_report()
     report.save_all(args.output)
+    from agents.prompt_templates import REQUEST_CONTRACT_V1
+    import hashlib
+    protocol = {"prompt_policy": args.prompt_policy,
+                "request_contract_sha256": (hashlib.sha256(REQUEST_CONTRACT_V1.encode()).hexdigest()
+                                            if args.prompt_policy == "contract_v1" else None),
+                "model": model, "snapshot": args.snapshot, "split": args.split,
+                "repeat": args.repeat, "seed": args.seed,
+                "session_prefix": runner.session_prefix,
+                "backend": args.backend, "dtype": args.local_dtype,
+                "weights_updated": False, "oracle_in_prompt": False}
+    (Path(args.output)/"execution_protocol.json").write_text(json.dumps(protocol,ensure_ascii=False,indent=2)+"\n")
 
     print(f"\nBenchmark 完成: {len(all_metrics)} 条有效数据, {len(error_dicts)} 个异常")
 

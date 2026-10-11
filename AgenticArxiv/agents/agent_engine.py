@@ -11,14 +11,17 @@ from utils.llm_client import LLMClient
 from tools.tool_registry import registry
 from tools.bootstrap import missing_tools, register_all_tools, registered_tool_count
 from agents.base_agent import BaseAgent, is_terminal_action
-from agents.prompt_templates import get_react_prompt, format_tool_description
+from agents.prompt_templates import get_react_prompt, format_tool_description, PROMPT_POLICIES
 from utils.logger import log
 
 
 class ReActAgent(BaseAgent):
     """方案 A: ReAct + 正则解析 Agent"""
 
-    def __init__(self, llm_client: LLMClient, side_effect_mgr=None, env=None, max_iterations: int = 5, llm_extra=None):
+    def __init__(self, llm_client: LLMClient, side_effect_mgr=None, env=None, max_iterations: int = 5, llm_extra=None, prompt_policy: str = "baseline"):
+        if prompt_policy not in PROMPT_POLICIES:
+            raise ValueError(f"Unknown prompt policy: {prompt_policy}")
+        self.prompt_policy = prompt_policy
         super().__init__(llm_client, side_effect_mgr=side_effect_mgr, env=env,
                          max_iterations=max_iterations, llm_extra=llm_extra)
         # 逐个模块独立导入：四个 import 曾共用一个 try，缺任何一个第三方依赖
@@ -43,6 +46,7 @@ class ReActAgent(BaseAgent):
             task=task,
             tools_description=tools_description,
             history=history_text,
+            prompt_policy=self.prompt_policy,
         )
         return [{"role": "user", "content": prompt}], {}
 

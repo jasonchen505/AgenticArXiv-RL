@@ -50,12 +50,19 @@ class BenchmarkRunner:
         local_device: str = "auto",
         local_dtype: str = "auto",
         generation_seed: Optional[int] = None,
+        prompt_policy: str = "baseline",
     ):
         if llm_backend not in self.LLM_BACKENDS:
             raise ValueError(
                 f"llm_backend 必须是 {self.LLM_BACKENDS} 之一，收到 {llm_backend!r}"
             )
+        from agents.prompt_templates import PROMPT_POLICIES
+        if prompt_policy not in PROMPT_POLICIES:
+            raise ValueError(f"Unknown prompt policy: {prompt_policy}")
         self.agent_types = agent_types or self.AGENT_TYPES
+        if prompt_policy != "baseline" and self.agent_types != ["regex"]:
+            raise ValueError("Request-contract prompt policy supports regex agent only")
+        self.prompt_policy = prompt_policy
         self.repeat = repeat
         self.model = model
         self.llm_extra = dict(llm_extra or {})
@@ -269,7 +276,7 @@ class BenchmarkRunner:
             return SkillAgent(self.llm_client, **kwargs)
         else:
             from agents.agent_engine import ReActAgent
-            return ReActAgent(self.llm_client, **kwargs)
+            return ReActAgent(self.llm_client, prompt_policy=self.prompt_policy, **kwargs)
 
     @staticmethod
     def _cleanup_paper_artifacts(session_id: str):

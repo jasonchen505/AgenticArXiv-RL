@@ -23,6 +23,7 @@ outcome 五个分量、`expected_tool_args` 的参数校验、严格工具序列
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 import re
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Mapping, Optional, Sequence
@@ -362,6 +363,7 @@ def make_grpo_reward_fn(
     reward_calc: Optional[RewardCalculator] = None,
     tracker: Any = None,
     auditor: Any = None,
+    reward_objective: str = "legacy",
 ) -> Callable[..., List[float]]:
     """构造 TRL GRPOTrainer 用的 reward function。
 
@@ -374,6 +376,8 @@ def make_grpo_reward_fn(
             的权重 —— 没有分量曲线就无法判断 reward 上升是策略变强还是权重
             表在动。传入 tracker 即把分量、权重与轨迹健康度一并记进训练日志。
     """
+    if reward_objective not in {"legacy", "blocked_reason_v1"}:
+        raise ValueError(f"Unknown training reward objective: {reward_objective}")
     calc = reward_calc or RewardCalculator()
 
     def grpo_reward_fn(completions=None, task_id=None, trainer_state=None,
@@ -416,9 +420,29 @@ def make_grpo_reward_fn(
                 if isinstance(completion, list)
                 else synthesize_trajectory(_completion_text(completion), env=env)
             )
-            breakdown, _ = calc.compute_reward_breakdown(
+            breakdown, metrics = calc.compute_reward_breakdown(
                 task_def, result, training_step=step
             )
+            if reward_objective == "blocked_reason_v1":
+                # Training-only cap: no positive credit for a wrong blocked
+                # reason. Reuse the frozen benchmark semantic predicate;
+                # prompts, tool observations and evaluation scoring stay intact.
+                legacy_reward = breakdown.total
+                triggered = (
+                    metrics.termination_type == "FINISH"
+                    and metrics.terminal_semantics_applicable
+                    and not metrics.terminal_semantics_accurate
+                )
+                effective = min(legacy_reward, 0.0) if triggered else legacy_reward
+                result = dict(result)
+                result["training_reward_audit"] = {
+                    "objective": reward_objective,
+                    "legacy_reward": legacy_reward,
+                    "effective_reward": effective,
+                    "gate_triggered": triggered,
+                    "reward_changed": effective != legacy_reward,
+                }
+                breakdown = replace(breakdown, total=effective)
             if tracker is not None:
                 tracker.record(breakdown, result)
             rewards.append(float(breakdown.total))
@@ -599,14 +623,22 @@ def make_multiturn_rollout_func(
                     result = _dispatch_environment_tool(
                         environments[index], action["name"], args
                     )
-                    observation = str(result)[:1000]
+                    # Preserve complete environment evidence for scoring. A
+                    # bounded model view must not turn a valid long answer into
+                    # malformed repr and trigger a false negative reward.
+                    full_observation = str(result)
+                    observation = full_observation[:1000]
                 except Exception as exc:  # noqa: BLE001
                     observation = f"{TOOL_ERROR_PREFIX}{exc}"
+                    full_observation = observation
 
                 histories[index].append({
                     "thought": thought,
                     "action": json.dumps(action, ensure_ascii=False),
-                    "observation": observation,
+                    "observation": full_observation,
+                    # This is the character-bounded view before the remaining
+                    # token budget is applied to its Observation suffix.
+                    "model_observation": observation,
                 })
                 suffix = f"\nObservation: {observation}\nThought:"
                 suffix_ids = tokenizer(suffix, add_special_tokens=False)["input_ids"]

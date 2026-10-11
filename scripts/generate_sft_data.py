@@ -40,7 +40,7 @@ from tools.bootstrap import register_all_tools
 register_all_tools()
 
 from agents.agent_engine import ReActAgent
-from agents.prompt_templates import format_tool_description, get_react_prompt
+from agents.prompt_templates import build_visible_setup_context, format_tool_description, get_react_prompt
 from agents.side_effects import LocalSideEffectManager
 from benchmark.metrics import extract_metrics, is_strict_success
 from benchmark.splits import load_split
@@ -71,6 +71,7 @@ def build_sft_samples_from_history(
     *,
     source_task_id: Optional[str] = None,
     source_split: Optional[str] = None,
+    initial_history: str = "",
 ) -> List[Dict[str, Any]]:
     """从完整的执行历史构造各轮次训练样本。
 
@@ -99,6 +100,10 @@ def build_sft_samples_from_history(
                 f"Thought: {prev_thought}\nAction: {prev_action}\nObservation: {prev_obs}"
             )
         history_text = "\n\n".join(history_parts)
+        if initial_history.strip():
+            history_text = "\n\n".join(
+                part for part in (initial_history.strip(), history_text) if part
+            )
 
         # 构造与推理完全一致的 ReAct Prompt
         prompt = get_react_prompt(
@@ -242,6 +247,14 @@ def generate_deterministic_trajectories(
                 ) from exc
 
         task_def = spec.to_task()
+        visible_state_task = task_def
+        if not getattr(spec, "setup", None) and getattr(spec, "depends_on", None):
+            # The legacy basic route created this search above even though it
+            # has no declarative setup. Describe the state actually prepared.
+            visible_state_task = {
+                **task_def,
+                "setup": [{"name": "get_recently_submitted_cs_papers", "args": search_args}],
+            }
         if not spec.steps:
             # blocked 任务：不调工具，并说明任务声明的具体阻塞原因。
             history.append({
@@ -307,6 +320,7 @@ def generate_deterministic_trajectories(
             history,
             source_task_id=spec.id,
             source_split=source_split,
+            initial_history=build_visible_setup_context(visible_state_task),
         )
         sft_data.extend(samples)
 
@@ -391,7 +405,11 @@ def generate_sft_dataset(
         for i, task_def in enumerate(tasks):
             print(f"[{i+1}/{len(tasks)}] 执行任务: {task_def['id']} - {task_def['task']}")
             try:
-                result = agent.run(task_def["task"], session_id=f"sft_gen_{task_def['id']}")
+                initial_history = build_visible_setup_context(task_def)
+                result = agent.run(
+                    task_def["task"], session_id=f"sft_gen_{task_def['id']}",
+                    initial_history=initial_history,
+                )
                 if result.get("history"):
                     metrics = extract_metrics(
                         task_def,
@@ -414,6 +432,7 @@ def generate_sft_dataset(
                         result["history"],
                         source_task_id=task_def["id"],
                         source_split=source_split,
+                        initial_history=initial_history,
                     )
                     sft_data.extend(samples)
                     print(f"   [OK] 提取 {len(samples)} 条多轮训练样本")
