@@ -325,6 +325,7 @@ class RunnerHonoursIterationBudgetTest(unittest.TestCase):
         from benchmark.runner import BenchmarkRunner
         runner = BenchmarkRunner.__new__(BenchmarkRunner)   # 不走 __init__，免得建 LLM 客户端
         runner.llm_extra = None
+        runner.prompt_policy = "baseline"
         runner._llm_client = object()      # ReActAgent 只是存下来，不会调用
         runner._side_effects = lambda: None
         runner._tool_env = lambda: None

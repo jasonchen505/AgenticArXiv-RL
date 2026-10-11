@@ -4,16 +4,26 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import sys
 from pathlib import Path
 from typing import Any, Dict, Tuple
 
-from benchmark.metrics import extract_metrics
-from benchmark.report import BenchmarkReport
-from benchmark.semantic_oracle import attach_expected_paper_ids
-from benchmark.splits import load_split
-from benchmark.tasks import get_all_tasks
-from benchmark.tasks_expanded import get_expanded_tasks
-from tools.bootstrap import require_all_tools
+# Same shim as run_benchmark.py / run_baselines.py: make `python -m
+# AgenticArxiv.benchmark.rescore_traces` work from the repository root (the
+# README's default working directory) as well as `python -m
+# benchmark.rescore_traces` from inside AgenticArxiv/.
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
+from benchmark.metrics import extract_metrics  # noqa: E402
+from benchmark.report import BenchmarkReport  # noqa: E402
+from benchmark.semantic_oracle import attach_expected_paper_ids  # noqa: E402
+from benchmark.splits import load_split  # noqa: E402
+from benchmark.tasks import get_all_tasks  # noqa: E402
+from benchmark.tasks_expanded import get_expanded_tasks  # noqa: E402
+from tools.bootstrap import require_all_tools  # noqa: E402
 
 
 def _key(row: Dict[str, Any]) -> Tuple[str, str, int]:
@@ -64,18 +74,38 @@ def main() -> None:
                 unknown.add(str(trace.get("task_id")))
                 continue
             detail = old_details.get(_key(trace), {})
+            trace_timing = trace.get("timing") or {}
+            trace_usage = trace.get("token_usage") or {}
             result = {
                 "history": trace.get("history") or [],
-                "total_time_ms": detail.get("total_ms", 0),
-                "iteration_count": detail.get(
-                    "iterations", len(trace.get("history") or [])
+                "total_time_ms": trace.get(
+                    "total_time_ms", detail.get("total_ms", 0)
+                ),
+                "iteration_count": trace.get(
+                    "iteration_count",
+                    detail.get("iterations", len(trace.get("history") or [])),
                 ),
                 "timing": {
-                    "total_llm_ms": detail.get("llm_ms", 0),
-                    "total_tool_ms": detail.get("tool_ms", 0),
-                    "framework_overhead_ms": detail.get("overhead_ms", 0),
+                    "total_router_ms": trace_timing.get(
+                        "total_router_ms", detail.get("router_ms", 0)
+                    ),
+                    "total_llm_ms": trace_timing.get(
+                        "total_llm_ms", detail.get("llm_ms", 0)
+                    ),
+                    "total_tool_ms": trace_timing.get(
+                        "total_tool_ms", detail.get("tool_ms", 0)
+                    ),
+                    "framework_overhead_ms": trace_timing.get(
+                        "framework_overhead_ms", detail.get("overhead_ms", 0)
+                    ),
                 },
-                "token_usage": {"total_tokens": detail.get("tokens", 0)},
+                "token_usage": trace_usage or {
+                    "total_tokens": detail.get("tokens", 0)
+                },
+                "routing": trace.get("routing") or {
+                    "mode": detail.get("router_mode", "policy"),
+                    "decisions": [],
+                },
             }
             metrics.append(extract_metrics(
                 task,

@@ -24,6 +24,20 @@
 
 **非目标**：生产级 arXiv 应用、Web UI、实时翻译服务（原 Web 应用已从本仓库移除，见原版 [AgenticArXiv](https://github.com/Algorineko/AgenticArXiv)）。
 
+### 可选 Jev 工具路由实验
+
+普通 ReAct 推理支持默认关闭的 Jev next-tool router：Jev 选择下一步工具，guided 模式
+用确定性解析器处理显式参数，含糊参数仍交给策略模型，环境继续执行工具。默认
+`TOOL_ROUTER=policy` 完全保留原行为；显式设为 `jev` 后，低置信度、API 故障或参数
+验证失败都会回退原策略路径。该功能不接入 GRPO 训练。配置、baseline、81 条
+routing-only pilot、限制与复现方式见
+[JEV_ROUTER.md](JEV_ROUTER.md)，可复制的开关/API 配置见
+[jev_config.example.env](jev_config.example.env)。另有无需 GPU/网络的 project-interface
+smoke，验证 policy/Jev 两条路径可经过同一 ReAct、环境和 benchmark 接口互换。真实
+GRPO Qwen 的 mixed 10-task、repeat=3 小样本中，guided Jev 将 strict success 从 40%
+提高到 60%，本地 Qwen token 减少 74.01%，总延迟增加 36.96%。该结果是小样本结构
+验证，不代表完整 81 题总体胜率。
+
 ---
 
 ## 🚀 快速开始
@@ -58,11 +72,11 @@ python -m AgenticArxiv.rl.rollout search_01 traces/train/
 | 维度 | 定义 |
 |------|------|
 | **State** | 任务描述 + 对话历史 + 工具结果 |
-| **Action** | 9 个工具（见下）+ FINISH |
+| **Action** | 10 个工具（见下）+ FINISH |
 | **Reward** | 五分量多粒度可验证奖励（format / tool / argument / process / outcome） |
 | **Transition** | `execute_tool(action) → observation`（`MockArxivEnv` 离线快照回放，确定性可复现） |
 
-### 动作空间（9 个工具）
+### 动作空间（10 个工具）
 
 1. `get_recently_submitted_cs_papers(aspect, days, max_results)` — 按子领域+时间窗浏览
 2. `search_arxiv_papers(query, max_results, days=None)` — 关键词/标题/作者检索
@@ -73,6 +87,7 @@ python -m AgenticArxiv.rl.rollout search_01 traces/train/
 7. `summarize_paper(ref, style, max_words)` — env 侧摘要（tldr / structured / bullet）
 8. `extract_paper_figures(ref)` — 抽出图表文件与 caption
 9. `analyze_figure(ref, figure_no, question=None)` — 图表分析：env 侧调本地 VLM 读图（多模态环境启用）
+10. `get_translated_content(ref, session_id, page=1)` — 按页读取译文（翻译后的中文 PDF，确定性抽取；第 1 页通常是标题与摘要）
 
 > 「检索 → 下载 → 阅读 → 总结 → 抽图 → 识图」解读闭环已全部打通：识图由本项目后训练的 [FigureQA VLM](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen3-VL-4B-FigureQA) 在 env 侧完成并录制快照，策略侧有学会该四步链的 [SFT-T5](https://www.modelscope.cn/models/Algorineko/AgenticArXiv-RL-Qwen2.5-1.5B-SFT-T5) 权重。
 > **准入原则**：动作空间不是越大越好——新增工具的准入标准是「能开启一类新任务」，而不是「可能有用」。设计决策链见 [工具集演进设计](docs/toolset_evolution.md)。
@@ -200,11 +215,11 @@ FIGURE_ANALYSIS_BACKEND=vlm VLM_MODEL_PATH=<FigureQA 目录> \
 ## 🧪 任务集与评测
 
 - **冒烟集**（`benchmark/tasks.py`）：8 条（search / download / translate / cache / composite）
-- **扩展集**（`benchmark/tasks_expanded.py`）：81 条、十三类模板（search / keyword_search / ref_form / composite / state / optional / constraint / long_chain / infeasible / paper_reading / paper_summary / figure_extraction / **figure_analysis**），`run_benchmark.py --task-set expanded` 启用。两套任务统一走 `TaskSpec`：`expected_tools` / `expected_tool_args` 由同一份 `steps` 派生，不出现两份手写列表漂移。
+- **扩展集**（`benchmark/tasks_expanded.py`）：86 条、十四类模板（search / keyword_search / ref_form / composite / state / optional / constraint / long_chain / infeasible / paper_reading / paper_summary / figure_extraction / figure_analysis / **translation_reading**），`run_benchmark.py --task-set expanded` 启用。两套任务统一走 `TaskSpec`：`expected_tools` / `expected_tool_args` 由同一份 `steps` 派生，不出现两份手写列表漂移。
 - **切分**：按模板切 train / iid_test / ood_test（`benchmark/splits.py`，固化于 `data/splits/`）；`rl_train` 只取成功率中间带（两端组内方差为零、不产生梯度）。换模型后需重新测量 rates，不能沿用旧档位。
 - **评测口径**：`pass^k` 可靠性（tau-bench 口径）、`false_finish`（退化策略 `always_finish` 91.5% vs `reference` 0%）、`ref_score`（比 `paper_id` 而非 `ref` 写法）、代价按成功次数归一。
 - **区分度闸门**（`run_baselines.py`）：确定性退化策略逐类目卡门槛——「永远搜 cs.AI」在检索类 0.833→0.446，「本该不调工具却调了」+0.165→−0.235。
-- **坏例回放**（`eval/badcase_replay.py` + `eval/eval_cases.jsonl`，14 条）：失败轨迹冻成永久回归用例，回放只跑打分器，`pytest` 即闸门；`hack/*` 记录骗分形态并配阈值断言，兼作 reward hacking 案例库。
+- **坏例回放**（`eval/badcase_replay.py` + `eval/eval_cases.jsonl`，17 条）：失败轨迹冻成永久回归用例，回放只跑打分器，`pytest` 即闸门；`hack/*` 记录骗分形态并配阈值断言，兼作 reward hacking 案例库。
 
 ```bash
 python -m AgenticArxiv.benchmark.run_benchmark --task-set expanded --split iid_test --offline
@@ -256,7 +271,7 @@ MIT License
 
 - [ ] **策略侧多模态化**：把 VLM 从 env 侧移进策略侧（observation 携带图表），复用 `train_vlm_figure_qa.py` 已验证的 TRL 视觉语言路径；候选基座 Qwen3-VL-4B / Qwen2.5-VL-2B（端侧档）
 - [ ] **端到端阅读链**：检索 → 下载 → 翻译 → 总结 → 识图在单模型内闭环，面向端侧推理（量化 + 2-4B 量级）优化
-- [ ] **翻译正文入上下文**：`translate_arxiv_pdf` 目前只产出文件，翻译文本不进模型上下文——补一个可验证的「读译文」工具
+- [x] **翻译正文入上下文**：新增 `get_translated_content`，按页确定性读取 pdf2zh 译文；离线快照回放（`build_snapshot --translate-max-ref N` 录制），按读类规则判定结果质量
 
 ### P1 — 新一代 Agentic RL 算法
 
@@ -275,7 +290,7 @@ MIT License
 
 ### P3 — RSI 受限自进化（bounded RSI）
 
-- [ ] **自进化数据闭环**：留出评测暴露弱点 → 坏例库自动扩容 → 参数化派生针对性数据 → 再训练 → 冻结新留出集（复用现有评测/数据/训练管线，前置件已齐）；验收：每轮四切分 pass¹ 不回退、坏例库只增不减（[arXiv:2609.11873](https://arxiv.org/abs/2609.11873) 四步循环）
+- [ ] **自进化数据闭环**：留出评测暴露弱点 → 坏例库自动扩容 → 参数化派生针对性数据 → 再训练 → 冻结新留出集（复用现有评测/数据/训练管线，前置件已齐）；验收：每轮四切分 pass³ 不回退、坏例库只增不减（[arXiv:2609.11873](https://arxiv.org/abs/2609.11873) 四步循环）。**编排器已落地**（`AgenticArxiv/rl/self_evolve.py`：diagnose → mine → select → synthesize → freeze → gate，纯 JSON、无需模型；`generate_parametric_sft_data.py --only-parents` 定向补数据），真实一轮训练与四切分对照待跑（见 [docs/roadmap_notes.md](docs/roadmap_notes.md)）
 
 ### ⛔ 环境阻塞项
 
