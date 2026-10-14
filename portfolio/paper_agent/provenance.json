@@ -1,0 +1,25 @@
+{
+  "source_round": 56,
+  "scientific_HEAD": "a9972601649201cc06cc52ffc58e3f6aee4642cb",
+  "extraction": "literal AST source spans; only module imports rewritten; no protocol changes",
+  "function_source_sha256": {
+    "round038_real_tasks.py:terms": "e00287b879ffd41ed3d646f05408d2c0b488502a34008d33adc005276b2536a7",
+    "round038_real_tasks.py:rank": "d9e13016f75dff575941f92b0bda40dbeba01082c52b246e542696c424f7cbe2",
+    "round038_real_tasks.py:PaperEvidenceEnv": "eeda3c1286e7261247d59259879f3a9f0f6995904a3787fe74364a385e8ee94a",
+    "round052_public_identity.py:norm": "a84ef4196fd3984e7fb83c7b9ae7dcefd147f22d926949426eba38fe501108c9",
+    "round053_public_identity.py:resolve": "74f5a14d94b2c9c5c79edc01651e3fdac1a288f61251fe366ee5d9a468dcd946",
+    "round043_agent.py:unique": "0bbdd62724a157682fb654e86e4620ccf355b3ab73d42291fe1afaf4ba5dcd0b",
+    "round044_direct.py:planning_prompt": "1a8ac50a182726e009cc3ae84019e305a451ae0ec374c7fe270bc401adf492d6",
+    "round044_direct.py:parse_plan": "e76e4c33b08d402591f550a4c8c813a742caccc9fc34b476eabe5c178c88c84f",
+    "round044_grounded.py:units": "b0585cb0c409884dcc0df518acd5caa4e315e737396cba1a249cb495244f1d7b",
+    "round044_grounded.py:selection_prompt": "0d8e4bc02e56640f821baba14695be6fe43ff6c0ff7e9560732d1a74c7075b28",
+    "round044_grounded.py:parse_selection": "6c9b60fc1598ddedb6e458a94f1b84a99a7f8476eccd9177577a7356b53a42d2",
+    "round044_grounded.py:render": "2f12b6076b3f51f1aab6f2de2ef2f955be241c38273b108b3fda003f26279140",
+    "round045_fastpath.py:state_actions": "0a483dbf976bd23a7627c11ccb8f19988a7ef2721449ea3278c6f2a2c0f394a7",
+    "round045_fastpath.py:canonical_units": "535dd5117f059e0b28430b2ec3785b7724c6b155261c9cd301246c26bb91d002",
+    "status_renderer_round052_candidate.py:status_from_events": "73b8f051ac76633a3334045dbe3a418200a52da4a9bf3d27e683e8e35bce92c4",
+    "presence_round051.py:GeneratedPresencePenalty": "a836eb071940a81b627f5253d1e6d1c80ae27c004b1b83e668eaca93a488eb20",
+    "eval_round052_native.py:call": "23d73e307718b30e0fc57152fd535b0cc9fb9adc692ac29cf7fd6837441e05c8",
+    "eval_round056.py:run": "baec5a8489bd72ccad612456406d81770c31c3f337caddea5b48bc3e259b55df"
+  }
+}

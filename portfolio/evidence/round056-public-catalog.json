@@ -1,0 +1,38 @@
+[
+  {
+    "paper_id": "2310.12823v1",
+    "title": "AgentTuning: Enabling Generalized Agent Abilities for LLMs",
+    "alias": "AgentTuning",
+    "source_url": "https://arxiv.org/html/2310.12823v1"
+  },
+  {
+    "paper_id": "2403.12881v1",
+    "title": "Agent-FLAN: Designing Data and Methods of Effective Agent Tuning for Large Language Models",
+    "alias": "Agent-FLAN",
+    "source_url": "https://arxiv.org/html/2403.12881v1"
+  },
+  {
+    "paper_id": "2306.06624v1",
+    "title": "RestGPT: Connecting Large Language Models with Real-World Applications via RESTful APIs",
+    "alias": "RestGPT",
+    "source_url": "https://arxiv.org/html/2306.06624v1"
+  },
+  {
+    "paper_id": "2401.05268v1",
+    "title": "AutoAct : Automatic Agent Learning from Scratch via Self-Planning",
+    "alias": "AutoAct",
+    "source_url": "https://arxiv.org/html/2401.05268v1"
+  },
+  {
+    "paper_id": "2311.18760v1",
+    "title": "TaskBench: Benchmarking Large Language Models for Task Automation",
+    "alias": "TaskBench",
+    "source_url": "https://arxiv.org/html/2311.18760v1"
+  },
+  {
+    "paper_id": "2312.14033v1",
+    "title": "T-Eval : Evaluating the Tool Utilization Capability Step by Step",
+    "alias": "T-Eval",
+    "source_url": "https://arxiv.org/html/2312.14033v1"
+  }
+]

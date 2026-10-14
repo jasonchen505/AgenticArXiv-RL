@@ -1,0 +1,10 @@
+{
+  "papers": 6,
+  "new_papers": 0,
+  "source_round": 55,
+  "fresh_requests_not_new_papers": true,
+  "no_new_download": true,
+  "same_original_HTML": true,
+  "bank_identical": true,
+  "retrieval_policy_changed_for_all_three_arms": true
+}

@@ -4,6 +4,9 @@
 
 # AgenticArXiv-RL — Agentic RL 训练环境
 
+> 求职研究分支入口：[论文工具 Agent 后训练复现与推理效率项目](portfolio/README.md)。训练证据、负结果、完整任务与成本对照见该目录。
+
+
 > **基于 ReAct Agent + arXiv 工具的 Agentic RL 训练环境**
 > 支持 SFT/DPO/GRPO/OPD 训练路径与可验证奖励（RLVR），用于研究 LLM Agent 强化学习。
 > 终极目标：**端侧部署的轻量多模态论文助手**——从检索、下载、翻译到总结、识图的端到端论文阅读模型。

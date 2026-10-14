@@ -1,0 +1,31 @@
+{
+  "closed_UTC": "2026-10-14T12:46:05.593094+00:00",
+  "complete": true,
+  "trajectories": 24,
+  "actual_generations": 38,
+  "actual_tools": 102,
+  "new_optimizer_steps": 0,
+  "external_model_API_calls": 0,
+  "only_GPU4_and_GPU7": true,
+  "cuda_fraction": 0.5,
+  "no_owned_jobs_remain": true,
+  "protected_assets_verified": 776,
+  "frozen_sources_verified": 13,
+  "model_cache_SHA_files_verified": 14,
+  "no_Mac_model_relay": true,
+  "tracked_git_clean": true,
+  "head": "a9972601649201cc06cc52ffc58e3f6aee4642cb",
+  "old_runtime_versions": "2.5.1+cu124 4.57.6",
+  "peaks": [
+    {
+      "worker": "qwen35_gpu4",
+      "GPU": 4,
+      "peak_reserved_GiB": 10.169921875
+    },
+    {
+      "worker": "qwen35_gpu7",
+      "GPU": 7,
+      "peak_reserved_GiB": 10.162109375
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "R56-01",
+    "task": "我要核查AgentTuning与AutoAct的数据质量。AgentTuning的interaction中模型连续重复几次会判失败，错误action格式如何用BLEU处理？trajectory filtering的reward门槛是什么，Mind2Web例外怎样设定？AutoAct的self-instruct以什么数据为seed、few-shot例子怎样采样、入库前排除什么；其zero-shot Thought-Action-Observation trajectories按什么reward条件保留？ 请用实际读到的英文原句分别支持各项，附真实版本出处。主源失败时按反馈读取同版本缓存，说明实际失败与恢复；论文的数字不能当成我们项目的完成率或省调用实测。",
+    "split": "fresh_authored_body_requests_on_known_papers"
+  },
+  {
+    "id": "R56-02",
+    "task": "帮我比较Agent-FLAN与AutoAct的数据输入。Agent-FLAN的negative sample learning补了哪两种工具/用户请求不匹配条件？它从ToolBench取多少queries、用什么模型在不提供tool information时生成回应，又怎样用irrelevant tools构造另一类负例？AutoAct的limited task information包括哪些内容，tool library对每个工具记录哪些信息？ 请用实际读到的英文原句分别支持各项，附真实版本出处。主源失败时按反馈读取同版本缓存，说明实际失败与恢复；论文的数字不能当成我们项目的完成率或省调用实测。",
+    "split": "fresh_authored_body_requests_on_known_papers"
+  },
+  {
+    "id": "R56-03",
+    "task": "请把RestGPT的在线规划与TaskBench工具依赖分清。RestGPT的Planner生成NL sub-task依据什么，API Selector读取什么来形成API calling plan？Planner会发哪三种signal，continue在什么条件下发出？TaskBench区分的resource与temporal dependencies各是什么意思，Hugging Face工具图有多少tools及edges？ 请用实际读到的英文原句分别支持各项，附真实版本出处。主源失败时按反馈读取同版本缓存，说明实际失败与恢复；论文的数字不能当成我们项目的完成率或省调用实测。",
+    "split": "fresh_authored_body_requests_on_known_papers"
+  },
+  {
+    "id": "R56-04",
+    "task": "为我的Agent工程面试核查RestGPT和T-Eval。RestGPT为了maximum context length，executor保留哪些API documents？response Parser依据什么schema生成哪种代码，出错时怎样fallback？T-Eval的Instruct evaluator分别怎样给format pass和parameter accuracy计分；Review evaluator把response分成哪几类、分类正确与错误怎样计分？ 请用实际读到的英文原句分别支持各项，附真实版本出处。主源失败时按反馈读取同版本缓存，说明实际失败与恢复；论文的数字不能当成我们项目的完成率或省调用实测。",
+    "split": "fresh_authored_body_requests_on_known_papers"
+  },
+  {
+    "id": "R56-05",
+    "task": "请核查AgentTuning和T-Eval的评测边界。AgentTuning的contamination analysis怎样匹配tokenized n-grams、允许多少token mismatch，dirty与clean的contamination rate阈值分别是什么？T-Eval为什么认为JSON format following不能保证problem-solving，文中ChatGLM3-6B与Baichuan2-7B的Instruct表现和Plan/Reason表现如何对照；其JSON与string两种difficulty formats各要求怎样的响应？ 请用实际读到的英文原句分别支持各项，附真实版本出处。主源失败时按反馈读取同版本缓存，说明实际失败与恢复；论文的数字不能当成我们项目的完成率或省调用实测。",
+    "split": "fresh_authored_body_requests_on_known_papers"
+  },
+  {
+    "id": "R56-06",
+    "task": "我想读Agent-FLAN与TaskBench正文。Agent-FLAN对instruction following、reasoning、retrieval、understanding分别怎样定义，哪些能力学得更容易、哪项最简单？将reasoning与understanding数据降到50%时，最终分数各下降多少？TaskBench的multimedia工具图有多少nodes和edges，daily life APIs工具图采用什么依赖以及有多少nodes和edges？ 请用实际读到的英文原句分别支持各项，附真实版本出处。主源失败时按反馈读取同版本缓存，说明实际失败与恢复；论文的数字不能当成我们项目的完成率或省调用实测。",
+    "split": "fresh_authored_body_requests_on_known_papers"
+  },
+  {
+    "id": "R56-07",
+    "task": "请查2310.12823v1与2401.05268v1正文。前一篇为何对各task分数做normalization、归一到什么平均值；error analysis检查了哪三个held-in tasks及哪些常见错误？后一篇Plan-Agent负责task decomposition和什么tool选择，Tool-Agent负责tool invocation的什么具体决定？ 请用实际读到的英文原句分别支持各项，附真实版本出处。主源失败时按反馈读取同版本缓存，说明实际失败与恢复；论文的数字不能当成我们项目的完成率或省调用实测。",
+    "split": "fresh_authored_body_requests_on_known_papers"
+  },
+  {
+    "id": "R56-08",
+    "task": "不要把TaskBench作为本次依据，目标只有RestGPT与T-Eval。RestGPT有哪些main components、Executor内部又有哪些子组件；API response error时Caller怎样重新组织调用？T-Eval怎样相对RapidAPI改进API documentation以规避什么失败；end-to-end evaluation使用什么Agent paradigm、maximum action step是多少？ 请用实际读到的英文原句分别支持各项，附真实版本出处。主源失败时按反馈读取同版本缓存，说明实际失败与恢复；论文的数字不能当成我们项目的完成率或省调用实测。",
+    "split": "fresh_authored_body_requests_on_known_papers"
+  }
+]

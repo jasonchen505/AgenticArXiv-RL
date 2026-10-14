@@ -1,0 +1,994 @@
+[
+  {
+    "arm": "qwen35_on_compiled",
+    "task_id": "R56-01",
+    "task_success": false,
+    "missing": [
+      "连续重复的失败条件及错误action格式的BLEU处理",
+      "轨迹reward过滤与Mind2Web例外阈值",
+      "self-instruct种子、例子采样和格式/重复过滤",
+      "zero-shot轨迹reward保留条件（任务未另问格式定义）"
+    ],
+    "note": "严格拒收，所有失败token保留：reasoning did not close within registered generation budget",
+    "selected_evidence": []
+  },
+  {
+    "arm": "qwen35_on_two",
+    "task_id": "R56-01",
+    "task_success": false,
+    "missing": [
+      "连续重复的失败条件及错误action格式的BLEU处理",
+      "轨迹reward过滤与Mind2Web例外阈值",
+      "self-instruct种子、例子采样和格式/重复过滤",
+      "zero-shot轨迹reward保留条件（任务未另问格式定义）"
+    ],
+    "note": "严格拒收，所有失败token保留：reasoning did not close within registered generation budget",
+    "selected_evidence": []
+  },
+  {
+    "arm": "qwen35_off_compiled",
+    "task_id": "R56-01",
+    "task_success": false,
+    "missing": [
+      "self-instruct种子、例子采样和格式/重复过滤"
+    ],
+    "note": "缺少随机few-shot采样来源，不能以种子和过滤两句补齐。",
+    "selected_evidence": [
+      {
+        "id": 20,
+        "paper_id": "2310.12823v1",
+        "text": "If the model repeats the same output three times consecutively, we consider it a repetitive failure.",
+        "source_url": "https://arxiv.org/html/2310.12823v1#S2.SS1.SSS2.Px1.p1.1",
+        "sentence_sha256": "42921580cbf26d601b613ddc86e59d44028089f4f3a2a58c682f0f946e722b85"
+      },
+      {
+        "id": 21,
+        "paper_id": "2310.12823v1",
+        "text": "If the model’s output format is wrong, we use the BLEU metric to compare it to all possible action choices and pick the closest match as the model’s action for that step.",
+        "source_url": "https://arxiv.org/html/2310.12823v1#S2.SS1.SSS2.Px1.p1.1",
+        "sentence_sha256": "82f7102af6f765204250c1938c1fe3b9c90d9b4ff2cc9da93e277e8d39ff6ed1"
+      },
+      {
+        "id": 26,
+        "paper_id": "2310.12823v1",
+        "text": "We filter trajectories for all tasks, except for Mind2Web, based on a final reward of r=1 , indicating complete correctness.",
+        "source_url": "https://arxiv.org/html/2310.12823v1#S2.SS1.SSS3.p1.1",
+        "sentence_sha256": "3158a795e3f4d22326a6c8492224a115a63dd3ae5ba8d4d4a23a48533df4a28b"
+      },
+      {
+        "id": 27,
+        "paper_id": "2310.12823v1",
+        "text": "However, due to the difficulty of the Mind2Web task, we use a threshold of r\\geq\\frac{2}{3} to ensure we obtain a sufficient number of trajectories.",
+        "source_url": "https://arxiv.org/html/2310.12823v1#S2.SS1.SSS3.p1.1",
+        "sentence_sha256": "da1b42394b3010d9a0c0ca5c75fe5de4b6b49fe8632801e5f48165c55fb1a05b"
+      },
+      {
+        "id": 43,
+        "paper_id": "2401.05268v1",
+        "text": "Initially, the database \\mathcal{D} is set to be equal to the task data examples \\mathcal{C} , with \\mathcal{C} as the seed for data generation.",
+        "source_url": "https://arxiv.org/html/2401.05268v1#S2.SS2.p1.1",
+        "sentence_sha256": "2e474ef0b62382ffbbe5e4340043fbd8dbf29da451847098fce9e3c62bbb71e0"
+      },
+      {
+        "id": 45,
+        "paper_id": "2401.05268v1",
+        "text": "The generated data will be added to \\mathcal{D} followed by filtering, with the exclusion of format erroneous and duplicate data before its inclusion.",
+        "source_url": "https://arxiv.org/html/2401.05268v1#S2.SS2.p1.1",
+        "sentence_sha256": "b08c80f8e981cd73dff1b3278bff6228e1689a2048a79b530124b3cc8aae4f5a"
+      },
+      {
+        "id": 51,
+        "paper_id": "2401.05268v1",
+        "text": "In order to obtain high-quality synthesized trajectories, we filter out all the trajectories with \\texttt{reward}<1 and collect trajectories with exactly correct answers ( \\texttt{reward}=1 ) as the training source for self-differentiation.",
+        "source_url": "https://arxiv.org/html/2401.05268v1#S2.SS3.SSS0.Px2.p1.1",
+        "sentence_sha256": "299063829387c8d235831ee68a449c1af8e172986fcdd8767b5ef2767188b455"
+      }
+    ]
+  },
+  {
+    "arm": "qwen35_on_two",
+    "task_id": "R56-03",
+    "task_success": true,
+    "missing": [],
+    "note": "原始四问项均由实际选中的同论文同版本原句支持；严格按原问题判断，含真实故障恢复。",
+    "selected_evidence": [
+      {
+        "id": 8,
+        "paper_id": "2306.06624v1",
+        "text": "In particular, leveraging the commonsense knowledge stored in LLMs, the planner generates a natural language (NL) sub-task based on the user query, previous plan, and execution history, forming a high-level NL plan.",
+        "source_url": "https://arxiv.org/html/2306.06624v1#S3.SS2.p2.1",
+        "sentence_sha256": "3ecc41f27665ab44a585c43730c26b69f32b252a8d5f803bc62d0e63da0ed6dd"
+      },
+      {
+        "id": 9,
+        "paper_id": "2306.06624v1",
+        "text": "Once the high-level sub-task plan is established, the API selector reads descriptions of available API endpoints to select APIs and construct the API calling plans.",
+        "source_url": "https://arxiv.org/html/2306.06624v1#S3.SS2.p2.1",
+        "sentence_sha256": "a5cb5ebd6d99b9b6d56868a2c9353b9dc76e8244a8deae84484a3321a26d80ba"
+      },
+      {
+        "id": 12,
+        "paper_id": "2306.06624v1",
+        "text": "It also plays a role of monitoring the whole process and outputs three kinds of signals: “continue”, new NL sub-task plan, and “end”.",
+        "source_url": "https://arxiv.org/html/2306.06624v1#S3.SS2.p3.1",
+        "sentence_sha256": "6bba9066f8938d55fbcc4f92cccf61991f6ad0565dbcf0874f9e4788e4e1c2d5"
+      },
+      {
+        "id": 13,
+        "paper_id": "2306.06624v1",
+        "text": "Specifically, if the planner monitors that the current executor’s output has not completed the present NL sub-task, it will output the \"continue\" signal.",
+        "source_url": "https://arxiv.org/html/2306.06624v1#S3.SS2.p3.1",
+        "sentence_sha256": "97f0ccbf88a3859d418d5ac892257f2bab2664f2b8e343c246166055fcedbf7c"
+      },
+      {
+        "id": 38,
+        "paper_id": "2311.18760v1",
+        "text": "In our research, we mainly investigate two of them: resource and temporal dependencies.",
+        "source_url": "https://arxiv.org/html/2311.18760v1#S2.SS2.SSS1.p1.1",
+        "sentence_sha256": "b47fc158aa86f7daff2265b33ee2d79c943caff62248bc556a8cfe906c3b76f0"
+      },
+      {
+        "id": 39,
+        "paper_id": "2311.18760v1",
+        "text": "For the former one, it means the two tools can have a connection if the input type of tool t_{a} can match the output type of tool t_{b} .",
+        "source_url": "https://arxiv.org/html/2311.18760v1#S2.SS2.SSS1.p1.1",
+        "sentence_sha256": "b369420a12fa055b72da32cd9064f10dd71a97e7078deed201a16e73f97e17b8"
+      },
+      {
+        "id": 40,
+        "paper_id": "2311.18760v1",
+        "text": "For the latter one, we devise tool graphs that highlight temporal dependencies, allowing any two tools to be linked to illustrate their order.",
+        "source_url": "https://arxiv.org/html/2311.18760v1#S2.SS2.SSS1.p1.1",
+        "sentence_sha256": "c9a6a9a30c249076b967fd94e9442e4638a9b0e4233433f8481332f30a7a57be"
+      },
+      {
+        "id": 47,
+        "paper_id": "2311.18760v1",
+        "text": "Guided by this principle, we constructed Hugging Face’s tool graph, comprising 23 tools and 225 edges.",
+        "source_url": "https://arxiv.org/html/2311.18760v1#S2.SS2.SSS1.Px1.p1.1",
+        "sentence_sha256": "7d7b80f1c7b06f10dd4ed165dcc3d8629ad8cc8311325a1e7800dfb9b0067092"
+      }
+    ]
+  },
+  {
+    "arm": "qwen35_off_compiled",
+    "task_id": "R56-03",
+    "task_success": false,
+    "missing": [
+      "Planner输入及API Selector生成calling plan的依据",
+      "三个planner信号及continue触发条件",
+      "资源与时间依赖的定义",
+      "Hugging Face工具图节点和边数量"
+    ],
+    "note": "严格拒收，所有失败token保留：sentence selection fields",
+    "selected_evidence": []
+  },
+  {
+    "arm": "qwen35_on_compiled",
+    "task_id": "R56-03",
+    "task_success": true,
+    "missing": [],
+    "note": "原始四问项均由实际选中的同论文同版本原句支持；严格按原问题判断，含真实故障恢复。",
+    "selected_evidence": [
+      {
+        "id": 8,
+        "paper_id": "2306.06624v1",
+        "text": "In particular, leveraging the commonsense knowledge stored in LLMs, the planner generates a natural language (NL) sub-task based on the user query, previous plan, and execution history, forming a high-level NL plan.",
+        "source_url": "https://arxiv.org/html/2306.06624v1#S3.SS2.p2.1",
+        "sentence_sha256": "3ecc41f27665ab44a585c43730c26b69f32b252a8d5f803bc62d0e63da0ed6dd"
+      },
+      {
+        "id": 9,
+        "paper_id": "2306.06624v1",
+        "text": "Once the high-level sub-task plan is established, the API selector reads descriptions of available API endpoints to select APIs and construct the API calling plans.",
+        "source_url": "https://arxiv.org/html/2306.06624v1#S3.SS2.p2.1",
+        "sentence_sha256": "a5cb5ebd6d99b9b6d56868a2c9353b9dc76e8244a8deae84484a3321a26d80ba"
+      },
+      {
+        "id": 12,
+        "paper_id": "2306.06624v1",
+        "text": "It also plays a role of monitoring the whole process and outputs three kinds of signals: “continue”, new NL sub-task plan, and “end”.",
+        "source_url": "https://arxiv.org/html/2306.06624v1#S3.SS2.p3.1",
+        "sentence_sha256": "6bba9066f8938d55fbcc4f92cccf61991f6ad0565dbcf0874f9e4788e4e1c2d5"
+      },
+      {
+        "id": 13,
+        "paper_id": "2306.06624v1",
+        "text": "Specifically, if the planner monitors that the current executor’s output has not completed the present NL sub-task, it will output the \"continue\" signal.",
+        "source_url": "https://arxiv.org/html/2306.06624v1#S3.SS2.p3.1",
+        "sentence_sha256": "97f0ccbf88a3859d418d5ac892257f2bab2664f2b8e343c246166055fcedbf7c"
+      },
+      {
+        "id": 38,
+        "paper_id": "2311.18760v1",
+        "text": "In our research, we mainly investigate two of them: resource and temporal dependencies.",
+        "source_url": "https://arxiv.org/html/2311.18760v1#S2.SS2.SSS1.p1.1",
+        "sentence_sha256": "b47fc158aa86f7daff2265b33ee2d79c943caff62248bc556a8cfe906c3b76f0"
+      },
+      {
+        "id": 39,
+        "paper_id": "2311.18760v1",
+        "text": "For the former one, it means the two tools can have a connection if the input type of tool t_{a} can match the output type of tool t_{b} .",
+        "source_url": "https://arxiv.org/html/2311.18760v1#S2.SS2.SSS1.p1.1",
+        "sentence_sha256": "b369420a12fa055b72da32cd9064f10dd71a97e7078deed201a16e73f97e17b8"
+      },
+      {
+        "id": 40,
+        "paper_id": "2311.18760v1",
+        "text": "For the latter one, we devise tool graphs that highlight temporal dependencies, allowing any two tools to be linked to illustrate their order.",
+        "source_url": "https://arxiv.org/html/2311.18760v1#S2.SS2.SSS1.p1.1",
+        "sentence_sha256": "c9a6a9a30c249076b967fd94e9442e4638a9b0e4233433f8481332f30a7a57be"
+      },
+      {
+        "id": 47,
+        "paper_id": "2311.18760v1",
+        "text": "Guided by this principle, we constructed Hugging Face’s tool graph, comprising 23 tools and 225 edges.",
+        "source_url": "https://arxiv.org/html/2311.18760v1#S2.SS2.SSS1.Px1.p1.1",
+        "sentence_sha256": "7d7b80f1c7b06f10dd4ed165dcc3d8629ad8cc8311325a1e7800dfb9b0067092"
+      }
+    ]
+  },
+  {
+    "arm": "qwen35_off_compiled",
+    "task_id": "R56-05",
+    "task_success": false,
+    "missing": [
+      "n-gram大小及允许token mismatch",
+      "dirty和clean污染率阈值",
+      "两个模型的格式与问题求解表现及结论",
+      "JSON和string两难度协议的响应要求"
+    ],
+    "note": "严格拒收，所有失败token保留：sentence selection fields",
+    "selected_evidence": []
+  },
+  {
+    "arm": "qwen35_on_compiled",
+    "task_id": "R56-05",
+    "task_success": true,
+    "missing": [],
+    "note": "原始四问项均由实际选中的同论文同版本原句支持；严格按原问题判断，含真实故障恢复。",
+    "selected_evidence": [
+      {
+        "id": 12,
+        "paper_id": "2310.12823v1",
+        "text": "We match tokenized 10-grams from test set examples on tokenized training set data, while allowing for at most 4 tokens of mismatch to account for slight differences.",
+        "source_url": "https://arxiv.org/html/2310.12823v1#A2.p2.1",
+        "sentence_sha256": "25dd468d772d0ccf2429c1fe41fea33d9a2419b7977b98ceaa58702a9e71dbe5"
+      },
+      {
+        "id": 15,
+        "paper_id": "2310.12823v1",
+        "text": "We define an evaluation example as “dirty” if its contamination rate is greater than 80%, and “clean” if its contamination rate is less than 20%.",
+        "source_url": "https://arxiv.org/html/2310.12823v1#A2.p2.1",
+        "sentence_sha256": "276531a2fd9d2a11146fc49c16f5aff00db0422e9965d2a9232b5f5fde57daf2"
+      },
+      {
+        "id": 43,
+        "paper_id": "2312.14033v1",
+        "text": "For instance, both ChatGLM3-6B and Baichuan2-7B obtain roughly 80% with the JSON evaluation protocol on Instruct subset, which reveals them holding a strong ability in JSON format rendering.",
+        "source_url": "https://arxiv.org/html/2312.14033v1#S4.SS1.p1.1",
+        "sentence_sha256": "1d4809fb6921cad33e729022e5fea0b0c94560abb792b9e1ff01950160d4c002"
+      },
+      {
+        "id": 44,
+        "paper_id": "2312.14033v1",
+        "text": "However, they struggle to generate valid JSON format responses on Plan and Reason subsets, i.e., the divergences of JSON and string scores are quite large on these subsets.",
+        "source_url": "https://arxiv.org/html/2312.14033v1#S4.SS1.p1.1",
+        "sentence_sha256": "2ab401361c2c51421459635bcf4ec7e546b18b58422c130b12d9e95be6c77397"
+      },
+      {
+        "id": 45,
+        "paper_id": "2312.14033v1",
+        "text": "Such a phenomenon suggests that the ability to output specific formats, i.e., JSON, does not guarantee the ability to resolve all the problems with this format.",
+        "source_url": "https://arxiv.org/html/2312.14033v1#S4.SS1.p1.1",
+        "sentence_sha256": "4df48215d7edb55365618b2d8bebe6527be46eaa6ea2464be81b2018f10258fc"
+      },
+      {
+        "id": 55,
+        "paper_id": "2312.14033v1",
+        "text": "The JSON format asks the LLM to generate standard JSON format responses, while the string format allows the LLM to answer in a relatively loose format.",
+        "source_url": "https://arxiv.org/html/2312.14033v1#A3.p1.1",
+        "sentence_sha256": "c3dc9e08f313c1fa3e5aaed44f1a5ee9b9d2bb1caef92c19c8fdf04cd4150901"
+      }
+    ]
+  },
+  {
+    "arm": "qwen35_on_two",
+    "task_id": "R56-05",
+    "task_success": true,
+    "missing": [],
+    "note": "原始四问项均由实际选中的同论文同版本原句支持；严格按原问题判断，含真实故障恢复。",
+    "selected_evidence": [
+      {
+        "id": 12,
+        "paper_id": "2310.12823v1",
+        "text": "We match tokenized 10-grams from test set examples on tokenized training set data, while allowing for at most 4 tokens of mismatch to account for slight differences.",
+        "source_url": "https://arxiv.org/html/2310.12823v1#A2.p2.1",
+        "sentence_sha256": "25dd468d772d0ccf2429c1fe41fea33d9a2419b7977b98ceaa58702a9e71dbe5"
+      },
+      {
+        "id": 15,
+        "paper_id": "2310.12823v1",
+        "text": "We define an evaluation example as “dirty” if its contamination rate is greater than 80%, and “clean” if its contamination rate is less than 20%.",
+        "source_url": "https://arxiv.org/html/2310.12823v1#A2.p2.1",
+        "sentence_sha256": "276531a2fd9d2a11146fc49c16f5aff00db0422e9965d2a9232b5f5fde57daf2"
+      },
+      {
+        "id": 43,
+        "paper_id": "2312.14033v1",
+        "text": "For instance, both ChatGLM3-6B and Baichuan2-7B obtain roughly 80% with the JSON evaluation protocol on Instruct subset, which reveals them holding a strong ability in JSON format rendering.",
+        "source_url": "https://arxiv.org/html/2312.14033v1#S4.SS1.p1.1",
+        "sentence_sha256": "1d4809fb6921cad33e729022e5fea0b0c94560abb792b9e1ff01950160d4c002"
+      },
+      {
+        "id": 44,
+        "paper_id": "2312.14033v1",
+        "text": "However, they struggle to generate valid JSON format responses on Plan and Reason subsets, i.e., the divergences of JSON and string scores are quite large on these subsets.",
+        "source_url": "https://arxiv.org/html/2312.14033v1#S4.SS1.p1.1",
+        "sentence_sha256": "2ab401361c2c51421459635bcf4ec7e546b18b58422c130b12d9e95be6c77397"
+      },
+      {
+        "id": 45,
+        "paper_id": "2312.14033v1",
+        "text": "Such a phenomenon suggests that the ability to output specific formats, i.e., JSON, does not guarantee the ability to resolve all the problems with this format.",
+        "source_url": "https://arxiv.org/html/2312.14033v1#S4.SS1.p1.1",
+        "sentence_sha256": "4df48215d7edb55365618b2d8bebe6527be46eaa6ea2464be81b2018f10258fc"
+      },
+      {
+        "id": 55,
+        "paper_id": "2312.14033v1",
+        "text": "The JSON format asks the LLM to generate standard JSON format responses, while the string format allows the LLM to answer in a relatively loose format.",
+        "source_url": "https://arxiv.org/html/2312.14033v1#A3.p1.1",
+        "sentence_sha256": "c3dc9e08f313c1fa3e5aaed44f1a5ee9b9d2bb1caef92c19c8fdf04cd4150901"
+      }
+    ]
+  },
+  {
+    "arm": "qwen35_on_compiled",
+    "task_id": "R56-07",
+    "task_success": true,
+    "missing": [],
+    "note": "原始四问项均由实际选中的同论文同版本原句支持；严格按原问题判断，含真实故障恢复。",
+    "selected_evidence": [
+      {
+        "id": 11,
+        "paper_id": "2310.12823v1",
+        "text": "Differences in task difficulty may result in higher scores (e.g., ReWOO) overshadowing lower ones (e.g., WebArena) in direct averages.",
+        "source_url": "https://arxiv.org/html/2310.12823v1#S3.SS1.SSS0.Px4.p1.1",
+        "sentence_sha256": "d3ad9204c29c17e8061f2d3e3c1915ea939cb1ece267c4efa91c165f1fe19051"
+      },
+      {
+        "id": 12,
+        "paper_id": "2310.12823v1",
+        "text": "Based on ( Liu et al., 2023 ) , we normalize scores of each task across evaluated models, scaling to an average of 1 for balanced benchmark assessments.",
+        "source_url": "https://arxiv.org/html/2310.12823v1#S3.SS1.SSS0.Px4.p1.1",
+        "sentence_sha256": "a71e4dc15f9d45aa5cba2a57f716de426dfe4647369a6958be423bdaf2ed7ddc"
+      },
+      {
+        "id": 14,
+        "paper_id": "2310.12823v1",
+        "text": "To delve into error analysis, we selected three tasks from the held-in set (ALFWorld, WebShop, Knowledge Graph) and identified common error types using a rule-based approach, such as invalid actions and repeated generations.",
+        "source_url": "https://arxiv.org/html/2310.12823v1#S3.SS3.p1.1",
+        "sentence_sha256": "97c2892f15167aa5c860b6d9ca9a1dff6a53046585b0606743dbaa80d0282ea1"
+      },
+      {
+        "id": 33,
+        "paper_id": "2401.05268v1",
+        "text": "Plan-Agent \\pi_{\\rm plan} undertakes task decomposition and determines which tool to invoke in each planning loop (Eq. 2 ).",
+        "source_url": "https://arxiv.org/html/2401.05268v1#S2.I1.i1.p1.2",
+        "sentence_sha256": "59228ed54035aaa2f8ef5feb45d36541a3c447c49449ad3846310684509c7dc8"
+      },
+      {
+        "id": 34,
+        "paper_id": "2401.05268v1",
+        "text": "Tool-Agent \\pi_{\\rm tool} is responsible for how to invoke the tool (Eq. 3 ) by deciding the parameters for the tool invocation.",
+        "source_url": "https://arxiv.org/html/2401.05268v1#S2.I1.i2.p1.2",
+        "sentence_sha256": "12d5647eb00f0447e0261f0f6771cc74c0e4adfe6a11056c49f207bf4740628b"
+      }
+    ]
+  },
+  {
+    "arm": "qwen35_on_two",
+    "task_id": "R56-07",
+    "task_success": true,
+    "missing": [],
+    "note": "原始四问项均由实际选中的同论文同版本原句支持；严格按原问题判断，含真实故障恢复。",
+    "selected_evidence": [
+      {
+        "id": 11,
+        "paper_id": "2310.12823v1",
+        "text": "Differences in task difficulty may result in higher scores (e.g., ReWOO) overshadowing lower ones (e.g., WebArena) in direct averages.",
+        "source_url": "https://arxiv.org/html/2310.12823v1#S3.SS1.SSS0.Px4.p1.1",
+        "sentence_sha256": "d3ad9204c29c17e8061f2d3e3c1915ea939cb1ece267c4efa91c165f1fe19051"
+      },
+      {
+        "id": 12,
+        "paper_id": "2310.12823v1",
+        "text": "Based on ( Liu et al., 2023 ) , we normalize scores of each task across evaluated models, scaling to an average of 1 for balanced benchmark assessments.",
+        "source_url": "https://arxiv.org/html/2310.12823v1#S3.SS1.SSS0.Px4.p1.1",
+        "sentence_sha256": "a71e4dc15f9d45aa5cba2a57f716de426dfe4647369a6958be423bdaf2ed7ddc"
+      },
+      {
+        "id": 14,
+        "paper_id": "2310.12823v1",
+        "text": "To delve into error analysis, we selected three tasks from the held-in set (ALFWorld, WebShop, Knowledge Graph) and identified common error types using a rule-based approach, such as invalid actions and repeated generations.",
+        "source_url": "https://arxiv.org/html/2310.12823v1#S3.SS3.p1.1",
+        "sentence_sha256": "97c2892f15167aa5c860b6d9ca9a1dff6a53046585b0606743dbaa80d0282ea1"
+      },
+      {
+        "id": 33,
+        "paper_id": "2401.05268v1",
+        "text": "Plan-Agent \\pi_{\\rm plan} undertakes task decomposition and determines which tool to invoke in each planning loop (Eq. 2 ).",
+        "source_url": "https://arxiv.org/html/2401.05268v1#S2.I1.i1.p1.2",
+        "sentence_sha256": "59228ed54035aaa2f8ef5feb45d36541a3c447c49449ad3846310684509c7dc8"
+      },
+      {
+        "id": 34,
+        "paper_id": "2401.05268v1",
+        "text": "Tool-Agent \\pi_{\\rm tool} is responsible for how to invoke the tool (Eq. 3 ) by deciding the parameters for the tool invocation.",
+        "source_url": "https://arxiv.org/html/2401.05268v1#S2.I1.i2.p1.2",
+        "sentence_sha256": "12d5647eb00f0447e0261f0f6771cc74c0e4adfe6a11056c49f207bf4740628b"
+      }
+    ]
+  },
+  {
+    "arm": "qwen35_off_compiled",
+    "task_id": "R56-07",
+    "task_success": true,
+    "missing": [],
+    "note": "原始四问项均由实际选中的同论文同版本原句支持；严格按原问题判断，含真实故障恢复。",
+    "selected_evidence": [
+      {
+        "id": 12,
+        "paper_id": "2310.12823v1",
+        "text": "Based on ( Liu et al., 2023 ) , we normalize scores of each task across evaluated models, scaling to an average of 1 for balanced benchmark assessments.",
+        "source_url": "https://arxiv.org/html/2310.12823v1#S3.SS1.SSS0.Px4.p1.1",
+        "sentence_sha256": "a71e4dc15f9d45aa5cba2a57f716de426dfe4647369a6958be423bdaf2ed7ddc"
+      },
+      {
+        "id": 14,
+        "paper_id": "2310.12823v1",
+        "text": "To delve into error analysis, we selected three tasks from the held-in set (ALFWorld, WebShop, Knowledge Graph) and identified common error types using a rule-based approach, such as invalid actions and repeated generations.",
+        "source_url": "https://arxiv.org/html/2310.12823v1#S3.SS3.p1.1",
+        "sentence_sha256": "97c2892f15167aa5c860b6d9ca9a1dff6a53046585b0606743dbaa80d0282ea1"
+      },
+      {
+        "id": 33,
+        "paper_id": "2401.05268v1",
+        "text": "Plan-Agent \\pi_{\\rm plan} undertakes task decomposition and determines which tool to invoke in each planning loop (Eq. 2 ).",
+        "source_url": "https://arxiv.org/html/2401.05268v1#S2.I1.i1.p1.2",
+        "sentence_sha256": "59228ed54035aaa2f8ef5feb45d36541a3c447c49449ad3846310684509c7dc8"
+      },
+      {
+        "id": 34,
+        "paper_id": "2401.05268v1",
+        "text": "Tool-Agent \\pi_{\\rm tool} is responsible for how to invoke the tool (Eq. 3 ) by deciding the parameters for the tool invocation.",
+        "source_url": "https://arxiv.org/html/2401.05268v1#S2.I1.i2.p1.2",
+        "sentence_sha256": "12d5647eb00f0447e0261f0f6771cc74c0e4adfe6a11056c49f207bf4740628b"
+      }
+    ]
+  },
+  {
+    "arm": "qwen35_off_compiled",
+    "task_id": "R56-02",
+    "task_success": true,
+    "missing": [],
+    "note": "原始四问项均由实际选中的同论文同版本原句支持；严格按原问题判断，含真实故障恢复。",
+    "selected_evidence": [
+      {
+        "id": 12,
+        "paper_id": "2403.12881v1",
+        "text": "Specifically, we insert two different types of negative samples: (1) no tools provided, user query requests for tools (2) tool provided, user query requests for normal conversations.",
+        "source_url": "https://arxiv.org/html/2403.12881v1#S4.SS3.p4.1",
+        "sentence_sha256": "e978bf9e3aaef1df9274a7509e492da41d3dc7e2cd44b662151da6b140394845"
+      },
+      {
+        "id": 15,
+        "paper_id": "2403.12881v1",
+        "text": "In order to construct negative samples for hallucination elimination, we first extract a small portion (761 samples) of user queries from ToolBench dataset.",
+        "source_url": "https://arxiv.org/html/2403.12881v1#A3.p1.1",
+        "sentence_sha256": "521304e4063325b482a1e16c29c071c890fc72da0580c4585ad4ca0d2f815208"
+      },
+      {
+        "id": 16,
+        "paper_id": "2403.12881v1",
+        "text": "Then we prompt the gpt-3.5-turbo to directly reply to these queries without providing any tool information.",
+        "source_url": "https://arxiv.org/html/2403.12881v1#A3.p1.1",
+        "sentence_sha256": "e9e9ef1f96f1a32cd1642aa621c8c0e73c2e77a6587b6a5564ae05591aa20bd4"
+      },
+      {
+        "id": 17,
+        "paper_id": "2403.12881v1",
+        "text": "To construct normal conversation with the tool information provided, we randomly append half of the queries with irrelevant tools, which generate the case (b) in Figure 6 .",
+        "source_url": "https://arxiv.org/html/2403.12881v1#A3.p1.1",
+        "sentence_sha256": "180f251ca5d6f081246b05a601a219b59c171eb825b960822933cf0a3088573f"
+      },
+      {
+        "id": 38,
+        "paper_id": "2401.05268v1",
+        "text": "Due to our agent learning from scratch, the task information at hand is quite limited, primarily encompassing three aspects: task name \\mathcal{M} , task description \\mathcal{P} , task data examples \\mathcal{C} .",
+        "source_url": "https://arxiv.org/html/2401.05268v1#S2.SS1.SSS0.Px2.p1.1",
+        "sentence_sha256": "084c75d5eec045784e9053c249b8c54628707fedde6d05169d3ffb33bc86a392"
+      },
+      {
+        "id": 43,
+        "paper_id": "2401.05268v1",
+        "text": "The tool library can be denoted as \\mathcal{T}=\\{m_{i},d_{i},u_{i}\\}_{i=1}^{|\\mathcal{T}|} , where m represents the name of each tool, d defines the functionality of each tool, u details the usage instruction of each tool, and |\\mathcal{T}| stands for the tools amount of the library.",
+        "source_url": "https://arxiv.org/html/2401.05268v1#S2.SS1.SSS0.Px3.p1.1",
+        "sentence_sha256": "bf266e006706f1a51731c6d1776809f780f8e9a21a42a4c0fa908a44aa51c1b5"
+      }
+    ]
+  },
+  {
+    "arm": "qwen35_on_two",
+    "task_id": "R56-02",
+    "task_success": true,
+    "missing": [],
+    "note": "原始四问项均由实际选中的同论文同版本原句支持；严格按原问题判断，含真实故障恢复。",
+    "selected_evidence": [
+      {
+        "id": 12,
+        "paper_id": "2403.12881v1",
+        "text": "Specifically, we insert two different types of negative samples: (1) no tools provided, user query requests for tools (2) tool provided, user query requests for normal conversations.",
+        "source_url": "https://arxiv.org/html/2403.12881v1#S4.SS3.p4.1",
+        "sentence_sha256": "e978bf9e3aaef1df9274a7509e492da41d3dc7e2cd44b662151da6b140394845"
+      },
+      {
+        "id": 15,
+        "paper_id": "2403.12881v1",
+        "text": "In order to construct negative samples for hallucination elimination, we first extract a small portion (761 samples) of user queries from ToolBench dataset.",
+        "source_url": "https://arxiv.org/html/2403.12881v1#A3.p1.1",
+        "sentence_sha256": "521304e4063325b482a1e16c29c071c890fc72da0580c4585ad4ca0d2f815208"
+      },
+      {
+        "id": 16,
+        "paper_id": "2403.12881v1",
+        "text": "Then we prompt the gpt-3.5-turbo to directly reply to these queries without providing any tool information.",
+        "source_url": "https://arxiv.org/html/2403.12881v1#A3.p1.1",
+        "sentence_sha256": "e9e9ef1f96f1a32cd1642aa621c8c0e73c2e77a6587b6a5564ae05591aa20bd4"
+      },
+      {
+        "id": 17,
+        "paper_id": "2403.12881v1",
+        "text": "To construct normal conversation with the tool information provided, we randomly append half of the queries with irrelevant tools, which generate the case (b) in Figure 6 .",
+        "source_url": "https://arxiv.org/html/2403.12881v1#A3.p1.1",
+        "sentence_sha256": "180f251ca5d6f081246b05a601a219b59c171eb825b960822933cf0a3088573f"
+      },
+      {
+        "id": 38,
+        "paper_id": "2401.05268v1",
+        "text": "Due to our agent learning from scratch, the task information at hand is quite limited, primarily encompassing three aspects: task name \\mathcal{M} , task description \\mathcal{P} , task data examples \\mathcal{C} .",
+        "source_url": "https://arxiv.org/html/2401.05268v1#S2.SS1.SSS0.Px2.p1.1",
+        "sentence_sha256": "084c75d5eec045784e9053c249b8c54628707fedde6d05169d3ffb33bc86a392"
+      },
+      {
+        "id": 43,
+        "paper_id": "2401.05268v1",
+        "text": "The tool library can be denoted as \\mathcal{T}=\\{m_{i},d_{i},u_{i}\\}_{i=1}^{|\\mathcal{T}|} , where m represents the name of each tool, d defines the functionality of each tool, u details the usage instruction of each tool, and |\\mathcal{T}| stands for the tools amount of the library.",
+        "source_url": "https://arxiv.org/html/2401.05268v1#S2.SS1.SSS0.Px3.p1.1",
+        "sentence_sha256": "bf266e006706f1a51731c6d1776809f780f8e9a21a42a4c0fa908a44aa51c1b5"
+      }
+    ]
+  },
+  {
+    "arm": "qwen35_on_compiled",
+    "task_id": "R56-02",
+    "task_success": true,
+    "missing": [],
+    "note": "原始四问项均由实际选中的同论文同版本原句支持；严格按原问题判断，含真实故障恢复。",
+    "selected_evidence": [
+      {
+        "id": 12,
+        "paper_id": "2403.12881v1",
+        "text": "Specifically, we insert two different types of negative samples: (1) no tools provided, user query requests for tools (2) tool provided, user query requests for normal conversations.",
+        "source_url": "https://arxiv.org/html/2403.12881v1#S4.SS3.p4.1",
+        "sentence_sha256": "e978bf9e3aaef1df9274a7509e492da41d3dc7e2cd44b662151da6b140394845"
+      },
+      {
+        "id": 15,
+        "paper_id": "2403.12881v1",
+        "text": "In order to construct negative samples for hallucination elimination, we first extract a small portion (761 samples) of user queries from ToolBench dataset.",
+        "source_url": "https://arxiv.org/html/2403.12881v1#A3.p1.1",
+        "sentence_sha256": "521304e4063325b482a1e16c29c071c890fc72da0580c4585ad4ca0d2f815208"
+      },
+      {
+        "id": 16,
+        "paper_id": "2403.12881v1",
+        "text": "Then we prompt the gpt-3.5-turbo to directly reply to these queries without providing any tool information.",
+        "source_url": "https://arxiv.org/html/2403.12881v1#A3.p1.1",
+        "sentence_sha256": "e9e9ef1f96f1a32cd1642aa621c8c0e73c2e77a6587b6a5564ae05591aa20bd4"
+      },
+      {
+        "id": 17,
+        "paper_id": "2403.12881v1",
+        "text": "To construct normal conversation with the tool information provided, we randomly append half of the queries with irrelevant tools, which generate the case (b) in Figure 6 .",
+        "source_url": "https://arxiv.org/html/2403.12881v1#A3.p1.1",
+        "sentence_sha256": "180f251ca5d6f081246b05a601a219b59c171eb825b960822933cf0a3088573f"
+      },
+      {
+        "id": 38,
+        "paper_id": "2401.05268v1",
+        "text": "Due to our agent learning from scratch, the task information at hand is quite limited, primarily encompassing three aspects: task name \\mathcal{M} , task description \\mathcal{P} , task data examples \\mathcal{C} .",
+        "source_url": "https://arxiv.org/html/2401.05268v1#S2.SS1.SSS0.Px2.p1.1",
+        "sentence_sha256": "084c75d5eec045784e9053c249b8c54628707fedde6d05169d3ffb33bc86a392"
+      },
+      {
+        "id": 43,
+        "paper_id": "2401.05268v1",
+        "text": "The tool library can be denoted as \\mathcal{T}=\\{m_{i},d_{i},u_{i}\\}_{i=1}^{|\\mathcal{T}|} , where m represents the name of each tool, d defines the functionality of each tool, u details the usage instruction of each tool, and |\\mathcal{T}| stands for the tools amount of the library.",
+        "source_url": "https://arxiv.org/html/2401.05268v1#S2.SS1.SSS0.Px3.p1.1",
+        "sentence_sha256": "bf266e006706f1a51731c6d1776809f780f8e9a21a42a4c0fa908a44aa51c1b5"
+      }
+    ]
+  },
+  {
+    "arm": "qwen35_on_compiled",
+    "task_id": "R56-04",
+    "task_success": false,
+    "missing": [
+      "上下文限制下保留哪些API文档",
+      "schema生成解析代码及出错回退",
+      "格式通过和参数准确率得分分配",
+      "Review分类及正确错误得分"
+    ],
+    "note": "严格拒收，所有失败token保留：reasoning did not close within registered generation budget",
+    "selected_evidence": []
+  },
+  {
+    "arm": "qwen35_off_compiled",
+    "task_id": "R56-04",
+    "task_success": false,
+    "missing": [
+      "上下文限制下保留哪些API文档",
+      "schema生成解析代码及出错回退",
+      "格式通过和参数准确率得分分配",
+      "Review分类及正确错误得分"
+    ],
+    "note": "严格拒收，所有失败token保留：sentence selection fields",
+    "selected_evidence": []
+  },
+  {
+    "arm": "qwen35_on_two",
+    "task_id": "R56-04",
+    "task_success": false,
+    "missing": [
+      "上下文限制下保留哪些API文档",
+      "schema生成解析代码及出错回退",
+      "格式通过和参数准确率得分分配",
+      "Review分类及正确错误得分"
+    ],
+    "note": "严格拒收，所有失败token保留：reasoning did not close within registered generation budget",
+    "selected_evidence": []
+  },
+  {
+    "arm": "qwen35_on_two",
+    "task_id": "R56-06",
+    "task_success": false,
+    "missing": [
+      "四能力定义及学习难度顺序"
+    ],
+    "note": "只选出能力定义和速度有差异，未给retrieval/understanding相对reasoning较易及instruction最简单；数据混合收益排序不能替代学习难度排序。",
+    "selected_evidence": [
+      {
+        "id": 11,
+        "paper_id": "2403.12881v1",
+        "text": "In this context, instruction following corresponds to format generation, reasoning corresponds to the thought quality at each step, retrieval involves selecting the appropriate function name to execute the task, and the understanding encompasses the parameter inputs for the selected functions.",
+        "source_url": "https://arxiv.org/html/2403.12881v1#S3.p2.1",
+        "sentence_sha256": "0bd5cd35e2ef96994edf79b1902d9eb3c4cb7ca239a6339c3efa1e68d45f0412"
+      },
+      {
+        "id": 12,
+        "paper_id": "2403.12881v1",
+        "text": "By visualizing the loss based on respective aspects in Figure 3 , we discern that LLM tends to exhibit varying learning speeds for the capabilities essential for proficient agents.",
+        "source_url": "https://arxiv.org/html/2403.12881v1#S3.p2.1",
+        "sentence_sha256": "f91cb5a327a4135c519440ec048388d06c512ca7d86cd6e5e9d9b4aa68d86c24"
+      },
+      {
+        "id": 20,
+        "paper_id": "2403.12881v1",
+        "text": "As shown in Table 2 , reasoning and understanding are among the most beneficial mixtures, then comes retrieval and instruction following: when reducing the portion of reasoning and understanding data to 50%, the final performance declines 1.1/0.3 points, respectively.",
+        "source_url": "https://arxiv.org/html/2403.12881v1#S4.SS2.p2.1",
+        "sentence_sha256": "550423a61f5268c1887b3eb15268d5ca71e41def4234d937cb68bc3772293b62"
+      },
+      {
+        "id": 50,
+        "paper_id": "2311.18760v1",
+        "text": "Finally, we could construct a tool graph over multimedia tools with 40 nodes and 449 edges.",
+        "source_url": "https://arxiv.org/html/2311.18760v1#S2.SS2.SSS1.Px2.p1.1",
+        "sentence_sha256": "93be23acdb4169e6be689e89240fac36624fb481bdcc7ecf8f9c90064dc7d551"
+      },
+      {
+        "id": 53,
+        "paper_id": "2311.18760v1",
+        "text": "However, it is worth noting that the type of dependencies among these APIs is predominantly temporal.",
+        "source_url": "https://arxiv.org/html/2311.18760v1#S2.SS2.SSS1.Px3.p1.1",
+        "sentence_sha256": "463484927f68ba1eae23d0f6ff2ba34c1a811654a03acf88650ad07209e9a8c8"
+      },
+      {
+        "id": 55,
+        "paper_id": "2311.18760v1",
+        "text": "In this scenario, we can build a tool graph with 40 nodes and 1,560 edges.",
+        "source_url": "https://arxiv.org/html/2311.18760v1#S2.SS2.SSS1.Px3.p1.1",
+        "sentence_sha256": "a49c6903a2c440252c64c8a4a72cd14d0edba9a8aae5431a30278667ee079909"
+      }
+    ]
+  },
+  {
+    "arm": "qwen35_on_compiled",
+    "task_id": "R56-06",
+    "task_success": false,
+    "missing": [
+      "四能力定义及学习难度顺序"
+    ],
+    "note": "只选出能力定义和速度有差异，未给retrieval/understanding相对reasoning较易及instruction最简单；数据混合收益排序不能替代学习难度排序。",
+    "selected_evidence": [
+      {
+        "id": 11,
+        "paper_id": "2403.12881v1",
+        "text": "In this context, instruction following corresponds to format generation, reasoning corresponds to the thought quality at each step, retrieval involves selecting the appropriate function name to execute the task, and the understanding encompasses the parameter inputs for the selected functions.",
+        "source_url": "https://arxiv.org/html/2403.12881v1#S3.p2.1",
+        "sentence_sha256": "0bd5cd35e2ef96994edf79b1902d9eb3c4cb7ca239a6339c3efa1e68d45f0412"
+      },
+      {
+        "id": 12,
+        "paper_id": "2403.12881v1",
+        "text": "By visualizing the loss based on respective aspects in Figure 3 , we discern that LLM tends to exhibit varying learning speeds for the capabilities essential for proficient agents.",
+        "source_url": "https://arxiv.org/html/2403.12881v1#S3.p2.1",
+        "sentence_sha256": "f91cb5a327a4135c519440ec048388d06c512ca7d86cd6e5e9d9b4aa68d86c24"
+      },
+      {
+        "id": 20,
+        "paper_id": "2403.12881v1",
+        "text": "As shown in Table 2 , reasoning and understanding are among the most beneficial mixtures, then comes retrieval and instruction following: when reducing the portion of reasoning and understanding data to 50%, the final performance declines 1.1/0.3 points, respectively.",
+        "source_url": "https://arxiv.org/html/2403.12881v1#S4.SS2.p2.1",
+        "sentence_sha256": "550423a61f5268c1887b3eb15268d5ca71e41def4234d937cb68bc3772293b62"
+      },
+      {
+        "id": 50,
+        "paper_id": "2311.18760v1",
+        "text": "Finally, we could construct a tool graph over multimedia tools with 40 nodes and 449 edges.",
+        "source_url": "https://arxiv.org/html/2311.18760v1#S2.SS2.SSS1.Px2.p1.1",
+        "sentence_sha256": "93be23acdb4169e6be689e89240fac36624fb481bdcc7ecf8f9c90064dc7d551"
+      },
+      {
+        "id": 53,
+        "paper_id": "2311.18760v1",
+        "text": "However, it is worth noting that the type of dependencies among these APIs is predominantly temporal.",
+        "source_url": "https://arxiv.org/html/2311.18760v1#S2.SS2.SSS1.Px3.p1.1",
+        "sentence_sha256": "463484927f68ba1eae23d0f6ff2ba34c1a811654a03acf88650ad07209e9a8c8"
+      },
+      {
+        "id": 55,
+        "paper_id": "2311.18760v1",
+        "text": "In this scenario, we can build a tool graph with 40 nodes and 1,560 edges.",
+        "source_url": "https://arxiv.org/html/2311.18760v1#S2.SS2.SSS1.Px3.p1.1",
+        "sentence_sha256": "a49c6903a2c440252c64c8a4a72cd14d0edba9a8aae5431a30278667ee079909"
+      }
+    ]
+  },
+  {
+    "arm": "qwen35_off_compiled",
+    "task_id": "R56-06",
+    "task_success": true,
+    "missing": [],
+    "note": "原始四问项均由实际选中的同论文同版本原句支持；严格按原问题判断，含真实故障恢复。",
+    "selected_evidence": [
+      {
+        "id": 10,
+        "paper_id": "2403.12881v1",
+        "text": "Inspired by ( Chen et al., 2023c ) , we explicitly disentangle the model’s capabilities into distinct components: instruction following, reasoning, retrieval, and understanding.",
+        "source_url": "https://arxiv.org/html/2403.12881v1#S3.p2.1",
+        "sentence_sha256": "68cdab0d3d44ff34e25e1af7af3a47edebc1aceadbb03b3db9f5356b8421d630"
+      },
+      {
+        "id": 11,
+        "paper_id": "2403.12881v1",
+        "text": "In this context, instruction following corresponds to format generation, reasoning corresponds to the thought quality at each step, retrieval involves selecting the appropriate function name to execute the task, and the understanding encompasses the parameter inputs for the selected functions.",
+        "source_url": "https://arxiv.org/html/2403.12881v1#S3.p2.1",
+        "sentence_sha256": "0bd5cd35e2ef96994edf79b1902d9eb3c4cb7ca239a6339c3efa1e68d45f0412"
+      },
+      {
+        "id": 13,
+        "paper_id": "2403.12881v1",
+        "text": "To elaborate, retrieval and understanding emerge as relatively more manageable tasks compared to reasoning, with instruction following being the simplest in the learning process.",
+        "source_url": "https://arxiv.org/html/2403.12881v1#S3.p2.1",
+        "sentence_sha256": "8b3204e011cdb9d86c141205ab30cd0777d29de3eca57ad00e8a09b78ff821ed"
+      },
+      {
+        "id": 20,
+        "paper_id": "2403.12881v1",
+        "text": "As shown in Table 2 , reasoning and understanding are among the most beneficial mixtures, then comes retrieval and instruction following: when reducing the portion of reasoning and understanding data to 50%, the final performance declines 1.1/0.3 points, respectively.",
+        "source_url": "https://arxiv.org/html/2403.12881v1#S4.SS2.p2.1",
+        "sentence_sha256": "550423a61f5268c1887b3eb15268d5ca71e41def4234d937cb68bc3772293b62"
+      },
+      {
+        "id": 46,
+        "paper_id": "2311.18760v1",
+        "text": "As shown in Figure 6 , nodes in the graph denote tools, and directed edges indicate that the output type of the source tool matches the input type of the target tool.",
+        "source_url": "https://arxiv.org/html/2311.18760v1#A1.SS10.p2.1",
+        "sentence_sha256": "bf825a218cbf64ae0b9fcb2e3d7b48fde0f5518dd63887c8fb841cc772b18d7c"
+      },
+      {
+        "id": 50,
+        "paper_id": "2311.18760v1",
+        "text": "Finally, we could construct a tool graph over multimedia tools with 40 nodes and 449 edges.",
+        "source_url": "https://arxiv.org/html/2311.18760v1#S2.SS2.SSS1.Px2.p1.1",
+        "sentence_sha256": "93be23acdb4169e6be689e89240fac36624fb481bdcc7ecf8f9c90064dc7d551"
+      },
+      {
+        "id": 53,
+        "paper_id": "2311.18760v1",
+        "text": "However, it is worth noting that the type of dependencies among these APIs is predominantly temporal.",
+        "source_url": "https://arxiv.org/html/2311.18760v1#S2.SS2.SSS1.Px3.p1.1",
+        "sentence_sha256": "463484927f68ba1eae23d0f6ff2ba34c1a811654a03acf88650ad07209e9a8c8"
+      },
+      {
+        "id": 55,
+        "paper_id": "2311.18760v1",
+        "text": "In this scenario, we can build a tool graph with 40 nodes and 1,560 edges.",
+        "source_url": "https://arxiv.org/html/2311.18760v1#S2.SS2.SSS1.Px3.p1.1",
+        "sentence_sha256": "a49c6903a2c440252c64c8a4a72cd14d0edba9a8aae5431a30278667ee079909"
+      }
+    ]
+  },
+  {
+    "arm": "qwen35_off_compiled",
+    "task_id": "R56-08",
+    "task_success": true,
+    "missing": [],
+    "note": "原始四问项均由实际选中的同论文同版本原句支持；严格按原问题判断，含真实故障恢复。",
+    "selected_evidence": [
+      {
+        "id": 7,
+        "paper_id": "2306.06624v1",
+        "text": "As demonstrated in Figure 2 , RestGPT consists of three main components: a Planner , an API Selector and an Executor .",
+        "source_url": "https://arxiv.org/html/2306.06624v1#S3.SS1.p1.1",
+        "sentence_sha256": "d64b955a0a58143a280041413b08a3455aa618f5f0a90bd49f1bc07b23082de7"
+      },
+      {
+        "id": 8,
+        "paper_id": "2306.06624v1",
+        "text": "The executor is composed of a Caller and a response Parser .",
+        "source_url": "https://arxiv.org/html/2306.06624v1#S3.SS1.p1.1",
+        "sentence_sha256": "8073f2f6bfbf212ca86baaf130aa7718f511bc7b3c80cb572f4dc8aec1cee7b5"
+      },
+      {
+        "id": 12,
+        "paper_id": "2306.06624v1",
+        "text": "If the API response indicates an error, the caller can read the error information and re-organize a new API calling to mitigate the issues.",
+        "source_url": "https://arxiv.org/html/2306.06624v1#S3.SS3.p3.1",
+        "sentence_sha256": "3970f0fa0827d84147f4b3f392256e9d7b1f2c3523325db77baaeff12e51ce64"
+      },
+      {
+        "id": 39,
+        "paper_id": "2312.14033v1",
+        "text": "To reduce the failure of tool-calling cases caused by inadequate tool descriptions, which focus the evaluation attention on pure LLM abilities, we manually generate high-quality and detailed tool documentation for each tool.",
+        "source_url": "https://arxiv.org/html/2312.14033v1#S2.SS3.SSS1.p1.1",
+        "sentence_sha256": "d692d13dc325789382c39f2736f40b50dfc7fe9b97de82a67a48d1c41b726d09"
+      },
+      {
+        "id": 50,
+        "paper_id": "2312.14033v1",
+        "text": "Compared to official RapidAPI documentation, our descriptions are more extensive and detailed, which facilitates the understanding of various tools and circumvents the failure cases due to the incomplete API documentation provided in the benchmark.",
+        "source_url": "https://arxiv.org/html/2312.14033v1#A4.p1.1",
+        "sentence_sha256": "01c599c401c8dec3ed84f610af6d7194dfb9370b37ca60aacc48b325e0e92744"
+      },
+      {
+        "id": 46,
+        "paper_id": "2312.14033v1",
+        "text": "To evaluate the pure ability of the single model, we adopt ReAct Yao et al.",
+        "source_url": "https://arxiv.org/html/2312.14033v1#A2.p1.1",
+        "sentence_sha256": "5c5bbe6d7cb98c2394078e718b7ca8ab63fec9cff622b906ba9a6ad88800abc6"
+      },
+      {
+        "id": 47,
+        "paper_id": "2312.14033v1",
+        "text": "(2022) as the basic agent paradigm for end-to-end evaluation and limit the maximum action step to 20 to ensure the efficient and accurate question-solving ability of LLM.",
+        "source_url": "https://arxiv.org/html/2312.14033v1#A2.p1.1",
+        "sentence_sha256": "50a8a0b159da9bf39d532d72714aa4ef6dbac6bbda9df1e6b0c23b70a3036934"
+      }
+    ]
+  },
+  {
+    "arm": "qwen35_on_two",
+    "task_id": "R56-08",
+    "task_success": true,
+    "missing": [],
+    "note": "原始四问项均由实际选中的同论文同版本原句支持；严格按原问题判断，含真实故障恢复。",
+    "selected_evidence": [
+      {
+        "id": 7,
+        "paper_id": "2306.06624v1",
+        "text": "As demonstrated in Figure 2 , RestGPT consists of three main components: a Planner , an API Selector and an Executor .",
+        "source_url": "https://arxiv.org/html/2306.06624v1#S3.SS1.p1.1",
+        "sentence_sha256": "d64b955a0a58143a280041413b08a3455aa618f5f0a90bd49f1bc07b23082de7"
+      },
+      {
+        "id": 8,
+        "paper_id": "2306.06624v1",
+        "text": "The executor is composed of a Caller and a response Parser .",
+        "source_url": "https://arxiv.org/html/2306.06624v1#S3.SS1.p1.1",
+        "sentence_sha256": "8073f2f6bfbf212ca86baaf130aa7718f511bc7b3c80cb572f4dc8aec1cee7b5"
+      },
+      {
+        "id": 12,
+        "paper_id": "2306.06624v1",
+        "text": "If the API response indicates an error, the caller can read the error information and re-organize a new API calling to mitigate the issues.",
+        "source_url": "https://arxiv.org/html/2306.06624v1#S3.SS3.p3.1",
+        "sentence_sha256": "3970f0fa0827d84147f4b3f392256e9d7b1f2c3523325db77baaeff12e51ce64"
+      },
+      {
+        "id": 46,
+        "paper_id": "2312.14033v1",
+        "text": "To evaluate the pure ability of the single model, we adopt ReAct Yao et al.",
+        "source_url": "https://arxiv.org/html/2312.14033v1#A2.p1.1",
+        "sentence_sha256": "5c5bbe6d7cb98c2394078e718b7ca8ab63fec9cff622b906ba9a6ad88800abc6"
+      },
+      {
+        "id": 47,
+        "paper_id": "2312.14033v1",
+        "text": "(2022) as the basic agent paradigm for end-to-end evaluation and limit the maximum action step to 20 to ensure the efficient and accurate question-solving ability of LLM.",
+        "source_url": "https://arxiv.org/html/2312.14033v1#A2.p1.1",
+        "sentence_sha256": "50a8a0b159da9bf39d532d72714aa4ef6dbac6bbda9df1e6b0c23b70a3036934"
+      },
+      {
+        "id": 50,
+        "paper_id": "2312.14033v1",
+        "text": "Compared to official RapidAPI documentation, our descriptions are more extensive and detailed, which facilitates the understanding of various tools and circumvents the failure cases due to the incomplete API documentation provided in the benchmark.",
+        "source_url": "https://arxiv.org/html/2312.14033v1#A4.p1.1",
+        "sentence_sha256": "01c599c401c8dec3ed84f610af6d7194dfb9370b37ca60aacc48b325e0e92744"
+      }
+    ]
+  },
+  {
+    "arm": "qwen35_on_compiled",
+    "task_id": "R56-08",
+    "task_success": true,
+    "missing": [],
+    "note": "原始四问项均由实际选中的同论文同版本原句支持；严格按原问题判断，含真实故障恢复。",
+    "selected_evidence": [
+      {
+        "id": 7,
+        "paper_id": "2306.06624v1",
+        "text": "As demonstrated in Figure 2 , RestGPT consists of three main components: a Planner , an API Selector and an Executor .",
+        "source_url": "https://arxiv.org/html/2306.06624v1#S3.SS1.p1.1",
+        "sentence_sha256": "d64b955a0a58143a280041413b08a3455aa618f5f0a90bd49f1bc07b23082de7"
+      },
+      {
+        "id": 8,
+        "paper_id": "2306.06624v1",
+        "text": "The executor is composed of a Caller and a response Parser .",
+        "source_url": "https://arxiv.org/html/2306.06624v1#S3.SS1.p1.1",
+        "sentence_sha256": "8073f2f6bfbf212ca86baaf130aa7718f511bc7b3c80cb572f4dc8aec1cee7b5"
+      },
+      {
+        "id": 12,
+        "paper_id": "2306.06624v1",
+        "text": "If the API response indicates an error, the caller can read the error information and re-organize a new API calling to mitigate the issues.",
+        "source_url": "https://arxiv.org/html/2306.06624v1#S3.SS3.p3.1",
+        "sentence_sha256": "3970f0fa0827d84147f4b3f392256e9d7b1f2c3523325db77baaeff12e51ce64"
+      },
+      {
+        "id": 46,
+        "paper_id": "2312.14033v1",
+        "text": "To evaluate the pure ability of the single model, we adopt ReAct Yao et al.",
+        "source_url": "https://arxiv.org/html/2312.14033v1#A2.p1.1",
+        "sentence_sha256": "5c5bbe6d7cb98c2394078e718b7ca8ab63fec9cff622b906ba9a6ad88800abc6"
+      },
+      {
+        "id": 47,
+        "paper_id": "2312.14033v1",
+        "text": "(2022) as the basic agent paradigm for end-to-end evaluation and limit the maximum action step to 20 to ensure the efficient and accurate question-solving ability of LLM.",
+        "source_url": "https://arxiv.org/html/2312.14033v1#A2.p1.1",
+        "sentence_sha256": "50a8a0b159da9bf39d532d72714aa4ef6dbac6bbda9df1e6b0c23b70a3036934"
+      },
+      {
+        "id": 50,
+        "paper_id": "2312.14033v1",
+        "text": "Compared to official RapidAPI documentation, our descriptions are more extensive and detailed, which facilitates the understanding of various tools and circumvents the failure cases due to the incomplete API documentation provided in the benchmark.",
+        "source_url": "https://arxiv.org/html/2312.14033v1#A4.p1.1",
+        "sentence_sha256": "01c599c401c8dec3ed84f610af6d7194dfb9370b37ca60aacc48b325e0e92744"
+      }
+    ]
+  }
+]

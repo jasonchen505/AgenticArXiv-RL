@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "CPU_only": true,
+  "model_generations": 0,
+  "runtime_venv": ".venv-qwen35-r050",
+  "tokenized_cases": 64,
+  "max_input_tokens": 4710,
+  "registered_correct_reverse_and_empty_plan_pools": true,
+  "all_live_contexts_checked_again_before_generation": true
+}
