@@ -12,10 +12,14 @@
 
 ```bash
 python -m unittest portfolio.test_protocol
+python -m unittest portfolio.test_review_results
+python -m portfolio.review_results --html /tmp/paper-agent-review.html --receipt /tmp/paper-agent-review.json
 python -m portfolio.check_closed_traces --assets /path/to/round-056-2026-10-13
 ```
 
-第一条使用自包含合同测试，第二条需要保存的真实研究资产，重放实际事件、句子跨度、提示和渲染结果，无模型调用，不作新的能力成绩。轻量接口的生成函数与冻结源绑定在 `paper_agent/provenance.json`。
+`test_protocol` 使用自包含合同测试。`check_closed_traces` 需要保存的真实研究资产，重放实际事件、句子跨度、提示和渲染结果，无模型调用，不作新的能力成绩。轻量接口的生成函数与冻结源绑定在 `paper_agent/provenance.json`。
+
+`test_review_results` 和 `review_results` 仅使用仓库中的轻量证据及 Python 标准库，不依赖 Transformers、Torch、GPU 或服务器资产。六项检查包含一项完整记录通过和五项篡改拒收：丢失败题、改选句、换版本、改配对成本和训练权重声明。这些检查证明记录一致性，不验证语义评分正确性。HTML/receipt 拒绝覆盖已有文件，重跑时选择新输出路径。
 
 ## 离线 GPU 接口
 
@@ -35,7 +39,7 @@ timeout 10800 python -m portfolio.paper_agent.run \
 
 ## 训练代码与审计索引
 
-上游通用训练入口为 `AgenticArxiv/rl/train_sft.py`、`train_dpo.py`、`train_grpo.py`；历史匹配配方保留于 `scripts/train_round014_preferences.py`、`train_round029_online.py`、`train_round036_plan.py` 等实际源文件。准确可用文件名、优化器步与证据 SHA 以 `evidence/results.json` 为准。
+上游通用训练入口为 `AgenticArxiv/rl/train_sft.py`、`train_dpo.py`、`train_grpo.py`；历史匹配配方保留于 `scripts/train_round010_preferences.py`、`train_round014_preferences.py`、`train_round029_online.py`、`train_round036_plan.py` 等实际源文件。R010 对应 448 条数据池、51 步、有效批量4、计划曝光204；它不同于 R014 真实错误锚定配方。准确文件名、优化器步与证据 SHA 以 `evidence/results.json` 及 `evidence/training-records/` 为准。
 
 先按 repo 的 snapshot/SFT 数据构建流程恢复资产，审计 TRAIN 父任务、语义实例、句式变体和 completion-only 监督。恢复历史配方时固定论文环境与工具版本；目前上游为10工具，早期学习是9工具，不能跳过旧 source SHA 失败后仍称精确重放。
 

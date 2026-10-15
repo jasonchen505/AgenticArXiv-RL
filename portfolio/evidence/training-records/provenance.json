@@ -1,0 +1,44 @@
+{
+  "records": {
+    "r003-sft-training-manifest.json": {
+      "source": "round-003-2026-10-03/sft-e1-training-manifest.json",
+      "source_SHA256": "855f3bcd8c214c656df0ddb449d9684a1d2f17e5bdecc109584ea681fa6300c5",
+      "public_SHA256": "855f3bcd8c214c656df0ddb449d9684a1d2f17e5bdecc109584ea681fa6300c5",
+      "transformation": "byte-identical original record"
+    },
+    "r003-sft-provenance.json": {
+      "source": "round-003-2026-10-03/sft-e1-provenance.json",
+      "source_SHA256": "1819c39152eaa021782692f1bbc74c74fe541f67eaeb16a77645b41acc9201a0",
+      "public_SHA256": "1819c39152eaa021782692f1bbc74c74fe541f67eaeb16a77645b41acc9201a0",
+      "transformation": "byte-identical original record"
+    },
+    "r010-training-audit.json": {
+      "source": "round-010-2026-10-04/training-audit.json",
+      "source_SHA256": "f2b69d535d9bfa541ef4f41b941bcccd3a42300de070f4fe95a60835ed940791",
+      "public_SHA256": "f2b69d535d9bfa541ef4f41b941bcccd3a42300de070f4fe95a60835ed940791",
+      "transformation": "byte-identical original record"
+    },
+    "r010-outcome.json": {
+      "source": "round-010-2026-10-04/mainline-outcome.json",
+      "source_SHA256": "85b5db40fecf1579c8124d7e43d7c5ccb61a43551c8b1ec2cd6d2245a0bdb230",
+      "public_SHA256": "85b5db40fecf1579c8124d7e43d7c5ccb61a43551c8b1ec2cd6d2245a0bdb230",
+      "transformation": "byte-identical original record"
+    },
+    "r036-plan-learning-audit.json": {
+      "source": "round-036-2026-10-11/training-closure/closed-candidate-audit.json",
+      "source_SHA256": "91d024c7469b4db054a35ac71c8a898f0bd5c5d1df62fbf339b84d5d3837ce66",
+      "public_SHA256": "91d024c7469b4db054a35ac71c8a898f0bd5c5d1df62fbf339b84d5d3837ce66",
+      "transformation": "byte-identical original record"
+    },
+    "r030-grpo-audit-excerpt.json": {
+      "source": "round-030-2026-10-09/closure-independent-audit.json",
+      "source_SHA256": "7d9d654d58803951bf6114fba9b19b9bbea8742580dce7ac8d30c4e81083d57f",
+      "public_SHA256": "ab2128b8980f880bf9eabf966e4a2377aa9ef4d42f318793c020b67fbeef390d",
+      "transformation": "explicit field excerpt; training omits job monitoring; no metric recomputation"
+    }
+  },
+  "weights_not_included": true,
+  "original_records_retained": true,
+  "new_training_steps": 0,
+  "new_model_generations": 0
+}

@@ -11,6 +11,8 @@
 - [复现说明](REPRODUCE.md)：训练环境、数据构建、轻量 CPU 检查、离线 GPU 接口。
 - [结果索引](evidence/results.json)：精简的训练与独立对照结果，引用原始证据 SHA。
 - [上游更新审阅](UPSTREAM_REVIEW.md)：本次合入的 self-evolve 数据与评测检查。
+- [面试讲述与追问](INTERVIEW.md)：60 秒开场、3 至 5 分钟展开及控制/评测追问。
+- [简历结论与证据](CLAIMS.md)：每条声明的代码、原始小记录、适用边界及展示顺序。
 
 最近的同模型同模式对照：8 条正文双论文自然请求，思考压缩路径与思考两调用均完成 **5/8**，实际调用 **16→11（−31.25%）**，全部 token **94,116→82,580（−12.26%）**。24 条轨迹、38 次实际生成全部保留；两组逐题成败、最终输入与最终生成 token IDs 相同，每次 generate 仍独立执行。小样本且绝对完成率未达 7/8 门槛，不能宣称真实用户可靠性普遍保持。
 
@@ -20,6 +22,10 @@
 
 ```bash
 python -m unittest portfolio.test_protocol
+python -m unittest portfolio.test_review_results
+python -m portfolio.review_results --html /tmp/paper-agent-review.html
 ```
 
 精确历史重放需要保存的离线论文资产和模型；大体积原文、完整轨迹及权重保留在实验服务器，未随代码仓库上传。公开证据索引区分历史实测、CPU 重放和未完成的能力证明。
+
+`review_results` 只用标准库，检查公开训练记录、24 条审阅记录、选句 SHA、版本 URL 和成本算术，生成一个历史证据浏览器。它不运行模型或工具，不重新判语义完成率。浏览器中的缺项与失败照原记录保留；五个训练小记录是原件，GRPO 审计摘录明确说明省略项。

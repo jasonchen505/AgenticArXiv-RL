@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "checked_at_utc": "2026-10-11T10:05:45.954689+00:00",
+  "candidate_GPU_exit_code": 0,
+  "physical_gpu": 4,
+  "actual_optimizer_calls": 128,
+  "actual_positive_lr_steps": 127,
+  "microbatch_calls": 512,
+  "order_and_full_exposure_record_verified": true,
+  "changed_adapter_tensors_independently_compared": 392,
+  "source_adapter_SHA_unchanged": true,
+  "candidate_adapter_SHA256": "9d54ea7d9df91a9dc1c9c6569a2df3d36e7cdae52b6ae853044ffb3f69cece27",
+  "no_model_success_rate_or_generalization_claim": true,
+  "sha256": {
+    "artifacts/reproduction/round-036-2026-10-11/training-closure/export_round036_training_closure.py": "de54d81b504ad78416224964f4d821bcf77bc52b5d35a043ecce3bb7bcca0b5b",
+    "artifacts/reproduction/round-036-2026-10-11/training-closure/plan49-training-manifest.json": "8ba2c5f1a93f864c393bbd6c2837f7c30bf2184477d2257e6ca504fd6e4c6f71",
+    "artifacts/reproduction/round-036-2026-10-11/training-closure/plan49-train-recovered.log": "5127403621a4aeb5a3ed71bc2bfd46a59125c54ff985bf57041d81c707bed692",
+    "artifacts/reproduction/round-036-2026-10-11/training-closure/plan49-train-recovered-job.json": "702904ef296d37253edecfc88750d27df11eba6c26bbf65eb08d2bf15a461ab2"
+  }
+}

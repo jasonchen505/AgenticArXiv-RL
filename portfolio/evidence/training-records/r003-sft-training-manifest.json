@@ -1,0 +1,47 @@
+{
+  "stage": "sft_qlora",
+  "base_model": "/data/home/chenyizhou/.cache/huggingface/hub/models--Qwen--Qwen2.5-1.5B-Instruct/snapshots/989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "data": "data/repro_20261002/sft_train.jsonl",
+  "data_sha256": "584dae5ac235cbeb7a5cf5461c3dabdb9d4875b3807dcaee883711613ab6012f",
+  "data_manifest_kind": "qlora_sft_train_mix",
+  "output": "/data/home/chenyizhou/AgenticArXiv-RL/outputs/repro_20261003/sft_e1/final",
+  "max_steps": -1,
+  "epochs": 1,
+  "batch_size": 1,
+  "gradient_accumulation_steps": 8,
+  "effective_batch_size": 8,
+  "learning_rate": 0.0001,
+  "max_length": 4096,
+  "optimizer": "paged_adamw_8bit",
+  "seed": 42,
+  "train_loss": 0.052045751536199496,
+  "trainable_parameters": 18464768,
+  "model_parameters_seen_by_trainer": 907081216,
+  "trainable_ratio_percent": 2.0356245586723736,
+  "peak_vram_gib": 6.9250922203063965,
+  "qlora": {
+    "load_in_4bit": true,
+    "quant_type": "nf4",
+    "double_quant": true,
+    "compute_dtype": "bfloat16",
+    "r": 16,
+    "alpha": 32,
+    "dropout": 0.05,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ]
+  },
+  "versions": {
+    "torch": "2.5.1",
+    "transformers": "4.57.6",
+    "trl": "0.29.1",
+    "peft": "0.17.1",
+    "bitsandbytes": "0.45.5"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "actual_optimizer_steps_from_step_logs": 597,
+  "actual_epoch": 1.0,
+  "sample_visits": 4776,
+  "adapter_sha256": "807090d928e088f7e83a35f8ef64920b2c3c5a91d661bd2b9b78c4e68eb634cc",
+  "source_model": "/data/home/chenyizhou/.cache/huggingface/hub/models--Qwen--Qwen2.5-1.5B-Instruct/snapshots/989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "training_data_sha256": "584dae5ac235cbeb7a5cf5461c3dabdb9d4875b3807dcaee883711613ab6012f",
+  "source_hashes": {
+    "AgenticArxiv/rl/train_sft.py": "78e994d626bb385ecada504c64724218b062ab9962595bfbe2aba2f256a6626a",
+    "AgenticArxiv/rl/train_grpo.py": "f764780b87d3f5534aeeb40f96b021ee65dba9fb78e6793902bbfbf122e4d436",
+    "AgenticArxiv/rl/grpo_reward.py": "e40d326535f54a170f386756f87697b546a960540a9b52ddb2b70bcca99a9177",
+    "AgenticArxiv/rl/reward.py": "745f0084fae11510d2fdd0120e3c1b2837d9d50d7fb38b45a0bd265c3eafdf8a"
+  }
+}
